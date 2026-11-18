@@ -25,7 +25,7 @@ img{max-width:100%;height:auto}
 *{scrollbar-color:var(--acento) transparent}
 
 /* Cabecera (idéntica en espíritu a header.top de los prototipos) */
-header.top{position:sticky;top:0;z-index:30;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:22px var(--gutter);background-color:var(--fondo,var(--crema));transition:background-color 1.4s cubic-bezier(.4,0,.2,1);background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;background-attachment:fixed;border-bottom:1px solid var(--linea)}
+header.top{position:sticky;top:0;z-index:30;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:22px var(--gutter);background-color:var(--fondo,var(--crema));transition:background-color 1.4s cubic-bezier(.4,0,.2,1);background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;background-attachment:fixed;border-bottom:0}
 header.top .marca{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--acento-texto);text-decoration:none;font-family:var(--mono)}
 header.top .marca:hover{color:var(--texto)}
 header.top .marca-logo{display:block;width:clamp(120px,14vw,168px);aspect-ratio:800/73;background:var(--texto);-webkit-mask:url(../marca/vertebral-logo.png) center/contain no-repeat;mask:url(../marca/vertebral-logo.png) center/contain no-repeat;transition:background-color .25s ease}
