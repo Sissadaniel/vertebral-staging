@@ -9,7 +9,7 @@ body.home .pie{display:none}
 .campo-rejilla{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
 
 .campo-tile{position:absolute;display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;cursor:pointer;text-decoration:none}
-.campo-tile img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;pointer-events:none;
+.campo-tile img{display:block;max-width:84%;max-height:76%;width:auto;height:auto;object-fit:contain;pointer-events:none;
   filter:drop-shadow(0 0 0 rgba(43,38,33,0));opacity:.82;transform:scale(var(--k,1));
   transition:opacity .45s var(--salida),transform .4s var(--salida)}   /* la sombra (filter) NO se anima: animarla sobre la rejilla transformada dejaba restos de pintura tras el hover */
 .campo-tile.foco{z-index:2}

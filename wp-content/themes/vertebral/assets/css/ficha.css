@@ -230,7 +230,7 @@
 .carta-creditos dd{margin:0;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden}
 /* la ilustración de la carta es el objeto sin fondo, sobre fondo liso */
 .carta-arte{display:grid;place-items:center;padding:4cqw;background:transparent}   /* sin recuadro: el emblema/objeto va directo sobre el papel */
-.carta-arte img{display:block;max-width:100%;max-height:calc(var(--ah) - 8cqw);width:auto;height:auto;object-fit:contain}
+.carta-arte img{display:block;max-width:84%;max-height:calc((var(--ah) - 8cqw) * .74);width:auto;height:auto;object-fit:contain}
 .carta-arte.es-sello img{opacity:.5;width:34%}
 /* la imagen principal queda en la columna derecha, como antes */
 .pv-slide[data-i="0"]{--sx:calc((var(--cw) + var(--gutter)) / 2)}
