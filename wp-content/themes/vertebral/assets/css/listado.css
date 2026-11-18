@@ -1,0 +1,69 @@
+/* Listado de proyectos: lista convencional (A–Z / año), buscador, filtros y foto al pasar el cursor. */
+
+.listado{padding:40px var(--gutter) 96px;--gap:18px}
+
+/* ───────── Cabecera y filtros ───────── */
+.listado-cabecera{margin-bottom:36px}
+.listado-cabecera-fila{display:flex;align-items:center;gap:18px 28px;flex-wrap:wrap}
+.listado-titulo{margin:0;font-family:var(--mono);font-weight:400;font-size:clamp(30px,4.2vw,54px);line-height:1.1;background:var(--papel);color:var(--papel-tinta);padding:12px 22px 14px;box-shadow:0 1px 0 rgb(var(--texto-rgb) / .14),0 16px 30px -18px rgb(var(--texto-rgb) / .5)}
+.listado-titulo .letra{display:inline-block;transform:none}
+.listado-titulo .palabra{display:inline-block;white-space:nowrap}
+.listado-cuenta{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave);font-variant-numeric:tabular-nums;font-family:var(--mono)}
+.listado-abrir{margin-left:auto}
+
+.listado-filtros{margin-top:26px;display:grid;gap:12px}
+.filtro-grupo{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.filtro-rotulo{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave);min-width:5.6rem;font-family:var(--mono)}
+.etq.filtro{padding:7px 11px;font-size:12px}
+.filtro-n{opacity:.6;font-variant-numeric:tabular-nums;margin-left:4px}
+.etq.filtro[aria-pressed="true"]{background:var(--texto);color:var(--crema);border-color:var(--texto)}
+.etq.filtro[aria-pressed="true"]:hover{background:var(--acento-texto);border-color:var(--acento-texto)}
+
+/* ───────── Buscador y orden ───────── */
+.listado-herramientas{margin-top:22px;display:flex;flex-wrap:wrap;justify-content:space-between;gap:14px 28px;align-items:center}
+.listado-buscar{flex:0 1 520px;max-width:100%}
+.listado-buscar input{width:100%;font:inherit;font-family:var(--mono);font-size:14px;letter-spacing:.02em;color:var(--texto);background:transparent;border:0;border-bottom:1px solid var(--texto);padding:10px 2px;border-radius:0;-webkit-appearance:none;appearance:none}
+.listado-buscar input::placeholder{color:var(--texto-suave);opacity:1}
+.listado-buscar input:focus-visible{outline:2px solid var(--acento-texto);outline-offset:4px}
+.listado-orden{display:flex;gap:8px;align-items:center;margin-left:auto}
+.listado-orden .filtro-rotulo{min-width:0;margin-right:2px}
+
+/* ───────── Lista ───────── */
+.lista-proyectos{list-style:none;margin:30px 0 0;padding:0;border-top:1px solid var(--linea)}
+.fila[hidden]{display:none}
+.fila-letra{font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--texto-suave);padding:30px 0 8px;border-bottom:1px solid var(--linea)}
+.fila{border-bottom:1px solid var(--linea);position:relative}
+.fila-letra + .fila{border-top:0}
+.fila-enlace{display:grid;grid-template-columns:48px minmax(0,2.6fr) minmax(0,1.6fr) minmax(0,1.2fr) 4.5rem;gap:6px 24px;align-items:baseline;padding:15px 4px;color:var(--texto);text-decoration:none;transition:padding-left .35s var(--salida),background-color .25s ease}
+.fila-nombre{font-family:var(--mono);font-size:clamp(17px,1.7vw,24px);line-height:1.2;letter-spacing:.01em}
+.fila-tip,.fila-lugar,.fila-anio{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave)}
+.fila-anio{text-align:right;font-variant-numeric:tabular-nums}
+.fila-enlace:hover,.fila-enlace:focus-visible{padding-left:14px;background:rgb(var(--texto-rgb) / .04)}
+.fila-enlace:hover .fila-nombre,.fila-enlace:focus-visible .fila-nombre{color:var(--acento-texto)}
+.fila-enlace:focus-visible{outline:2px solid var(--acento-texto);outline-offset:-2px}
+
+/* foto: aparece sobre la lista, junto al cursor */
+.fila-previa{position:fixed;z-index:60;left:0;top:0;width:340px;pointer-events:none;opacity:0;visibility:hidden;line-height:0;background:var(--crema-2);box-shadow:0 1px 0 rgb(var(--texto-rgb) / .14),0 22px 40px -18px rgb(var(--texto-rgb) / .6);transform:translateY(6px);transition:opacity .22s ease,transform .3s var(--salida),visibility 0s .22s}
+.fila-previa img{display:block;width:100%;height:auto}
+.fila-enlace:hover .fila-previa,.fila-enlace:focus-visible .fila-previa{opacity:1;visibility:visible;transform:none;transition-delay:0s}
+.fila-nombre{grid-area:n}.fila-tip{grid-area:t}.fila-lugar{grid-area:l}.fila-anio{grid-area:a}.fila-previa{grid-area:p}.fila-simbolo{grid-area:s;align-self:center;justify-self:start;width:48px;height:48px;overflow:hidden}
+.fila-simbolo img{display:block;width:48px;height:48px;object-fit:contain}
+.fila-simbolo.es-sello img{opacity:.35}
+.fila-enlace{grid-template-areas:"s n t l a"}
+
+.listado-vacio{margin:40px 0;color:var(--texto-suave)}
+.listado-vacio[hidden]{display:none}
+
+/* ───────── Responsive ───────── */
+@media (max-width:720px){
+  .listado{padding-top:24px}
+  .filtro-rotulo{min-width:100%}
+  .fila-enlace{grid-template-columns:40px minmax(0,1fr) 4.5rem;grid-template-areas:"s n a" ". t t" ". l l";gap:4px 14px}
+}
+/* sin cursor (táctil): miniatura fija a la derecha de la fila */
+@media (hover:none){
+  .fila-enlace{grid-template-columns:40px minmax(0,1fr) 4.5rem 72px;grid-template-areas:"s n a p" ". t t p" ". l l p"}
+  .fila-simbolo,.fila-simbolo img{width:40px;height:40px}
+  .fila-previa{position:static;width:72px;opacity:1;visibility:visible;transform:none;box-shadow:none;align-self:center}
+}
+@media (prefers-reduced-motion:reduce){ .fila-enlace,.fila-previa{transition:none} }

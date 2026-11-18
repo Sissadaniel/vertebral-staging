@@ -1,0 +1,104 @@
+/* Portada: campo infinito de proyectos (arrastre con inercia, zoom hacia el cursor, regla de zoom). */
+
+body.home{overflow:hidden}
+body.home header.top{background:transparent;background-image:none;border-bottom-color:transparent}
+body.home .pie{display:none}
+.campo{position:relative;height:calc(100svh - var(--header-alto));overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;background:transparent}
+.campo.arrastrando{cursor:grabbing}
+.campo-escena{position:absolute;inset:0}
+.campo-rejilla{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+
+.campo-tile{position:absolute;display:grid;grid-template:minmax(0,1fr)/minmax(0,1fr);place-items:center;cursor:pointer;text-decoration:none}
+.campo-tile img{display:block;max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;pointer-events:none;
+  filter:drop-shadow(0 0 0 rgba(43,38,33,0));opacity:.82;transform:scale(var(--k,1));
+  transition:opacity .45s var(--salida),transform .4s var(--salida)}   /* la sombra (filter) NO se anima: animarla sobre la rejilla transformada dejaba restos de pintura tras el hover */
+.campo-tile.foco{z-index:2}
+.campo-tile.foco img{filter:drop-shadow(0 6px 14px rgba(43,38,33,.16));opacity:1;--k:1.22}
+.campo.intro .campo-tile img{opacity:0}
+.campo.saliendo .campo-tile:not(.elegida) img{opacity:0;transition:opacity .35s ease}
+.campo-tile.elegida img{opacity:1;filter:none}
+
+.campo-zoom{position:absolute;left:50%;bottom:28px;width:min(560px,80vw);height:46px;transform:translateX(-50%);transition:opacity .35s ease;cursor:pointer}
+.campo-zoom[hidden]{display:none}
+.regla{position:absolute;inset:0;pointer-events:none;
+  background:
+    repeating-linear-gradient(90deg,var(--texto) 0 1px,transparent 1px calc(100% / 10)) 0 0/100% 100% no-repeat,
+    repeating-linear-gradient(90deg,var(--texto) 0 1px,transparent 1px 7px) 0 50%/100% 52% no-repeat}
+.regla::after{content:"";position:absolute;right:0;top:0;bottom:0;width:1px;background:var(--texto)}
+.regla-pulgar{position:absolute;top:50%;left:calc(var(--z,.3) * 100%);width:9px;height:9px;border-radius:50%;background:var(--texto);transform:translate(-50%,-50%)}
+.campo-zoom input{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:pointer}
+.campo-zoom:focus-within .regla{outline:2px solid var(--acento-texto);outline-offset:4px}
+.campo-zoom-pct{position:absolute;right:0;top:calc(100% + 6px);font-size:12px;letter-spacing:.08em;color:var(--texto-suave);font-variant-numeric:tabular-nums}
+/* imagen que vuela entre vistas (FLIP): fija sobre todo, sin recibir eventos */
+.vtb-hero{position:fixed;z-index:200;margin:0;pointer-events:none;object-fit:contain;transform-origin:0 0;will-change:transform}
+/* cambio de vista sin cortes: el contenido sale y entra por opacidad */
+.sitio-main{transition:opacity .3s ease}
+.sitio-main.fuera{opacity:0}
+@media (prefers-reduced-motion:reduce){ .campo-tile img{transition:none} .sitio-main{transition:none} }
+/* con la barra de administración visible (solo editores con sesión iniciada) */
+body.admin-bar .campo{height:calc(100svh - var(--header-alto) - var(--wp-admin--admin-bar--height,0px))}
+body.admin-bar .pv{height:calc(100svh - var(--header-alto) - var(--wp-admin--admin-bar--height,0px))}
+
+/* Filtro de la portada: botón arriba a la derecha y cajón lateral */
+.campo-barra{position:absolute;top:18px;right:var(--gutter);z-index:5;display:flex;align-items:center;gap:10px;transition:opacity .35s ease}
+.campo.saliendo .campo-barra{opacity:0;pointer-events:none}
+.campo-filtro{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto);background:var(--papel);border:1px solid var(--linea);padding:9px 14px;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgb(var(--texto-rgb) / .1),0 8px 16px -10px rgb(var(--texto-rgb) / .45);transition:opacity .35s ease,background .2s ease,color .2s ease;font-family:var(--mono)}
+.campo-filtro:hover{background:var(--texto);color:var(--crema);border-color:var(--texto)}
+:root{--naranja:#b8470f}   /* naranja oscuro del toggle y del triángulo de filtro */
+.campo-filtro-sello{width:18px;height:18px;object-fit:contain;display:block;transition:filter .2s ease}
+.campo-filtro:hover .campo-filtro-sello{filter:brightness(.8)}
+.campo-filtro-n{display:inline-grid;place-items:center;min-width:18px;height:18px;border-radius:9px;background:var(--acento-texto);color:var(--crema);font-size:12px;letter-spacing:0;padding:0 5px}
+.campo.saliendo .campo-filtro{opacity:0;pointer-events:none}
+.campo-fondo{position:fixed;inset:0;z-index:118;background:rgb(var(--texto-rgb) / .32);opacity:0;transition:opacity .3s ease;cursor:default}
+.campo-fondo.abierto{opacity:1}
+.campo-cajon{position:fixed;top:0;right:0;bottom:0;z-index:119;width:min(380px,90vw);display:flex;flex-direction:column;background:var(--crema);border-left:1px solid var(--linea);box-shadow:-18px 0 40px -24px rgb(var(--texto-rgb) / .55);transform:translateX(100%);transition:transform .32s var(--salida);cursor:default}
+.campo-cajon.abierto{transform:none}
+.campo-cajon[hidden],.campo-fondo[hidden]{display:none}
+.campo-cajon-cab{display:flex;align-items:center;justify-content:space-between;padding:22px 24px 16px;border-bottom:1px solid var(--linea)}
+.campo-cajon-cab h2{margin:0;font-size:12px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.campo-cajon-cerrar{font:inherit;font-size:26px;line-height:1;background:none;border:0;color:var(--texto);cursor:pointer;padding:2px 8px}
+.campo-cajon-cerrar:hover{color:var(--acento-texto)}
+.campo-cajon-cuerpo{flex:1;overflow:auto;padding:22px 24px;display:grid;align-content:start;gap:28px}
+.campo-cajon .filtro-grupo{flex-direction:column;align-items:flex-start;gap:10px}
+.campo-cajon .filtro-grupo .filtro-rotulo{min-width:0;width:100%}
+.campo-cajon .filtro-grupo{flex-direction:row;flex-wrap:wrap}
+.campo-cajon-vacio{margin:0;font-size:13px;color:var(--acento-texto)}
+.campo-cajon-pie{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 24px 22px;border-top:1px solid var(--linea)}
+.campo-cajon-cuenta{margin:0;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave);font-family:var(--mono)}
+.campo.filtrando .campo-rejilla{opacity:0}
+.campo-rejilla{transition:opacity .35s ease}
+@media (prefers-reduced-motion:reduce){ .campo-cajon,.campo-fondo,.campo-rejilla{transition:none} }
+.campo-filtro-n[hidden]{display:none}
+
+.campo-modo{display:inline-flex;align-items:center;gap:10px;font:inherit;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto);background:var(--papel);border:1px solid var(--linea);padding:9px 12px;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgb(var(--texto-rgb) / .1),0 8px 16px -10px rgb(var(--texto-rgb) / .45);font-family:var(--mono)}
+.campo-modo-pista{position:relative;display:block;width:36px;height:20px;border-radius:10px;border:1px solid var(--naranja);background:transparent;transition:background .25s ease}
+.campo-modo-pista i{position:absolute;top:1px;left:1px;width:16px;height:16px;border-radius:50%;background:url(../marca/sello-textura.webp) 38% 46%/260% no-repeat var(--naranja);box-shadow:0 0 0 1.5px var(--naranja),0 1px 3px rgb(var(--texto-rgb) / .45);transition:transform .25s var(--salida)}
+.campo-modo[aria-checked="true"] .campo-modo-pista{background:var(--naranja)}
+.campo-modo[aria-checked="true"] .campo-modo-pista i{transform:translateX(16px);box-shadow:0 0 0 1.5px var(--papel-claro),0 1px 3px rgba(0,0,0,.5)}
+.campo-modo:hover{border-color:var(--texto)}
+.campo-modo:focus-visible,.campo-filtro:focus-visible{outline:2px solid var(--acento-texto);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){ .campo-modo-pista,.campo-modo-pista i{transition:none} }
+
+/* proyectos fuera del filtro: transparencia muy marcada (conservan su color), sin interacción */
+.campo-tile.fuera{pointer-events:none;cursor:default}
+.campo-tile.fuera img{opacity:.12;filter:drop-shadow(0 0 0 rgba(43,38,33,0));--k:1}
+
+/* distorsión ligera por celda (translate/scale individuales): al entrar a un proyecto la pieza elegida se endereza para que el vuelo sea continuo */
+.campo-tile{transition:translate .5s var(--salida),scale .5s var(--salida)}
+.campo-tile.elegida{translate:0 0!important;scale:1!important}
+@media (prefers-reduced-motion:reduce){ .campo-tile{transition:none} }
+
+/* Vista previa de la foto que acompaña al puntero sobre las celdas con objeto */
+.campo-previa{position:absolute;left:0;top:0;z-index:5;width:clamp(190px,24vw,360px);aspect-ratio:var(--ar,1.5);max-height:50vh;pointer-events:none;opacity:0;
+  box-shadow:0 1px 0 rgb(var(--texto-rgb) / .14),0 18px 34px -14px rgb(var(--texto-rgb) / .55);background:var(--papel);transition:opacity .2s ease;will-change:transform}
+.campo-previa.visible{opacity:1}
+.campo-previa img{display:block;width:100%;height:100%;object-fit:cover}
+@media (hover:none){.campo-previa{display:none}}
+@media (prefers-reduced-motion:reduce){.campo-previa{transition:none}}
+.campo-previa-anio{position:absolute;right:10px;bottom:10px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;line-height:1;color:var(--papel-tinta);background:var(--papel);padding:4px 7px}
+.campo-previa-nombre{position:absolute;left:10px;bottom:10px;max-width:calc(100% - 70px);font-family:var(--mono);font-size:clamp(11px,.95vw,14px);line-height:1.15;background:var(--papel);color:var(--papel-tinta);padding:5px 11px 6px;transform:none;box-shadow:0 1px 0 rgb(var(--texto-rgb) / .14),0 8px 14px -8px rgb(var(--texto-rgb) / .6)}
+.campo-previa-nombre .letra{display:inline-block;transform:none}
+.campo-previa-nombre .palabra{display:inline-block;white-space:nowrap}
+
+/* al cambiar el filtro, las celdas actuales se desvanecen antes de entrar el grupo de resultados */
+.campo.reagrupando .campo-tile img{opacity:0;transition:opacity .26s ease;transition-delay:0s!important}
