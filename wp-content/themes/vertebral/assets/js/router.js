@@ -163,7 +163,7 @@
       var vuelo = null;
       var puedeVolar = origen && ((tipoNue === 'proyecto' && !origen.deProyecto) || (tipoNue === 'inicio' && origen.deProyecto));
       // ida desde una celda que muestra un objeto sin fondo: el objeto vuela al objeto de la carta (no a la imagen principal)
-      var objetoALaCarta = !!(puedeVolar && tipoNue === 'proyecto' && origen.srcObjeto && nuevo.querySelector('.carta-arte:not(.es-sello) img'));
+      var objetoALaCarta = !!(puedeVolar && tipoNue === 'proyecto' && origen.desdeObjeto && origen.srcObjeto && nuevo.querySelector('.carta-arte:not(.es-sello) img'));
       if (objetoALaCarta) { origen = { rect: origen.rect, src: origen.srcObjeto }; }
       if (puedeVolar) { vuelo = prepararVuelo(origen.src, origen.rect, origen.srcObjeto); await conLimite(vuelo.listo, 600); }
       if (tipoNue === 'inicio' && proyectoActualId) { VTB.volverA = proyectoActualId; }

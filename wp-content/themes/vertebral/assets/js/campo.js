@@ -330,7 +330,7 @@
         rejilla.style.transition = '';
         var r = t.img.getBoundingClientRect();
         vistaGuardada = { ox: ox, oy: oy, escala: escala };
-        VTB.navegar(p.url, { origen: { rect: { left: r.left, top: r.top, width: r.width, height: r.height }, src: p.grande || p.mini, srcObjeto: t.el.classList.contains('es-objeto') ? (p.objeto || '') : ((VTB.fotoElegida && VTB.fotoElegida[p.id]) ? VTB.fotoElegida[p.id].src : '') } });
+        VTB.navegar(p.url, { origen: { rect: { left: r.left, top: r.top, width: r.width, height: r.height }, src: p.grande || p.mini, desdeObjeto: t.el.classList.contains('es-objeto'), srcObjeto: t.el.classList.contains('es-objeto') ? (p.objeto || '') : ((VTB.fotoElegida && VTB.fotoElegida[p.id]) ? VTB.fotoElegida[p.id].src : '') } });
       }, dur + (quieto ? 0 : 60));
     };
 
