@@ -239,7 +239,8 @@
 .carta > *{transition:opacity .45s ease,transform .5s var(--pv-ease)}
 /* la ficha (símbolo + texto) sólo se ve con el primer slide y cuando su imagen ya está completamente visible (.carta-lista, la pone ficha.js) */
 .pv:not(.carta-lista) .carta > *{opacity:0;transform:translateX(-28px);pointer-events:none}
-.pv.aparece.en-primero:not(.carta-lista) .carta > .carta-arte{opacity:1;transform:none}   /* el objeto que llega volando desde el campo aterriza ahí mismo */
+.carta > .carta-arte{transform:none!important;transition:opacity .45s ease}   /* el emblema nunca se desliza: solo se funde */
+.pv.aparece.en-primero:not(.carta-lista) .carta > .carta-arte{opacity:1;transition:none}   /* el objeto que llega volando desde el campo aterriza ahí mismo */
 .pv > .pv-aviso{position:absolute;z-index:6;right:var(--gutter);bottom:24px}
 @media (max-width:899px){
   .pv{height:auto;min-height:0;grid-template-rows:auto auto;--cw:min(calc(100vw - 2 * var(--gutter)),21rem)}
