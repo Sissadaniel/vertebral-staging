@@ -37,10 +37,12 @@ header.top .wp-block-navigation a{color:var(--texto-suave);text-decoration:none;
 header.top .wp-block-navigation a:hover{color:var(--texto)}
 header.top .wp-block-navigation .current-menu-item > a,header.top .wp-block-navigation a[aria-current="page"]{color:var(--texto);border-color:var(--texto)}
 header.top .wp-block-navigation__responsive-container.is-menu-open{background-color:var(--fondo,var(--crema))!important;background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;color:var(--texto);padding:22px var(--gutter)}
-header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content{padding-top:12vh;align-items:flex-start}
-header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container{flex-direction:column;align-items:flex-start;gap:clamp(14px,3vh,26px)}
-header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content{font-size:clamp(22px,3.4vw,34px);letter-spacing:.08em;color:var(--texto);padding-bottom:6px}
-header.top .wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]{border-color:var(--texto)}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content{padding-top:12vh;align-items:stretch;width:100%}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container{display:block;width:100%;border-top:1px solid var(--linea);padding:0;margin:0}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item{display:block;width:100%;border-bottom:1px solid var(--linea)}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content{display:block;width:100%;box-sizing:border-box;font-size:clamp(30px,6vw,64px);font-weight:700;line-height:1.1;letter-spacing:.04em;color:var(--texto);padding:clamp(14px,2.4vh,26px) 4px;border:0;transition:padding-left .35s var(--salida),background-color .25s ease,color .25s ease}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content:hover,header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content:focus-visible{padding-left:14px;background:rgb(var(--texto-rgb) / .04);color:var(--acento-texto)}
+header.top .wp-block-navigation__responsive-container.is-menu-open a[aria-current="page"]{color:var(--acento-texto)}
 header.top .wp-block-navigation__responsive-container-open svg,header.top .wp-block-navigation__responsive-container-close svg{width:28px;height:28px}
 header.top .wp-block-navigation__responsive-container-open{padding:6px}
 header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-navigation__responsive-container-close{color:var(--texto)}
