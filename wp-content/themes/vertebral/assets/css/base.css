@@ -154,3 +154,5 @@ header.top .wp-block-navigation__responsive-container-close::after{content:'Cerr
 
 /* burger y cierre invertidos: la palabra a la izquierda y el glifo a la derecha */
 header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-navigation__responsive-container-close{flex-direction:row-reverse;justify-content:flex-start}
+/* etiqueta «Menú»/«Cerrar»: más chica, negrita y con aire entre letras */
+header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-navigation__responsive-container-close{font-size:12px;font-weight:700;letter-spacing:.2em}
