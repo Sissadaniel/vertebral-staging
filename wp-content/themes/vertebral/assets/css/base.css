@@ -29,7 +29,7 @@ header.top{position:sticky;top:0;z-index:30;display:flex;align-items:baseline;ju
 header.top::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background-color:var(--fondo,var(--crema));background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;background-attachment:fixed;transition:background-color 1.4s cubic-bezier(.4,0,.2,1),opacity .7s ease}
 header.top .marca{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--acento-texto);text-decoration:none;font-family:var(--mono)}
 header.top .marca:hover{color:var(--texto)}
-header.top .marca-logo{display:block;width:clamp(120px,14vw,168px);aspect-ratio:800/73;background:var(--texto);-webkit-mask:url(../marca/vertebral-logo.png) center/contain no-repeat;mask:url(../marca/vertebral-logo.png) center/contain no-repeat;transition:background-color .25s ease}
+header.top .marca-logo{display:block;width:clamp(150px,19vw,240px);aspect-ratio:800/73;background:var(--texto);-webkit-mask:url(../marca/vertebral-logo.png) center/contain no-repeat;mask:url(../marca/vertebral-logo.png) center/contain no-repeat;transition:background-color .25s ease}
 header.top .marca:hover .marca-logo{background:var(--acento-texto)}
 header.top .wp-block-navigation{font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
 header.top .wp-block-navigation .wp-block-navigation__container{gap:10px 26px}
@@ -137,5 +137,17 @@ header.top:has(.wp-block-navigation__responsive-container.is-menu-open){z-index:
 /* el cierre del menú ocupa exactamente el sitio del burger (sin saltos) y la barra de scroll no aparece/desaparece al abrir */
 html{scrollbar-gutter:stable}
 @media (min-width:721px){
-  header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-close{position:absolute;top:22px;right:var(--gutter);left:auto;margin:0;padding:6px;width:40px;height:40px;box-sizing:border-box;display:grid;place-items:center}
+  header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-close{position:absolute;top:22px;right:var(--gutter);left:auto;margin:0}
+}
+
+/* burger de 3 líneas con la palabra «Menú» a su derecha; el botón de cierre ocupa exactamente el mismo sitio y mide lo mismo */
+header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-navigation__responsive-container-close{display:inline-flex;align-items:center;justify-content:flex-start;gap:12px;width:104px;height:40px;padding:0 6px;box-sizing:border-box;font:inherit;font-family:var(--mono);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto);background:none;border:0;cursor:pointer}
+header.top .wp-block-navigation__responsive-container-open svg{display:none}
+header.top .wp-block-navigation__responsive-container-open::before{content:'';flex:none;width:24px;height:16px;background:linear-gradient(currentColor,currentColor) 0 0/100% 2px no-repeat,linear-gradient(currentColor,currentColor) 0 50%/100% 2px no-repeat,linear-gradient(currentColor,currentColor) 0 100%/100% 2px no-repeat}
+header.top .wp-block-navigation__responsive-container-open::after{content:'Menú'}
+header.top .wp-block-navigation__responsive-container-close svg{width:24px;height:24px;flex:none}
+header.top .wp-block-navigation__responsive-container-close::after{content:'Cerrar'}
+@media (max-width:720px){
+  header.top .wp-block-navigation__responsive-container-open::after{content:none}
+  header.top .wp-block-navigation__responsive-container-open{width:40px;justify-content:center}
 }

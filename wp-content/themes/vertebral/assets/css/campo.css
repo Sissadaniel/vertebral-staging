@@ -102,3 +102,9 @@ body.admin-bar .pv{height:calc(100svh - var(--header-alto) - var(--wp-admin--adm
 
 /* al cambiar el filtro, las celdas actuales se desvanecen antes de entrar el grupo de resultados */
 .campo.reagrupando .campo-tile img{opacity:0;transition:opacity .26s ease;transition-delay:0s!important}
+
+/* escritorio: toggle y filtro viven en la fila de la cabecera, a la izquierda del burger (misma posición en inicio y proyectos) */
+@media (min-width:900px){
+  .campo-barra,.listado-abrir{position:fixed;top:22px;right:calc(var(--gutter) + 104px + 18px);z-index:40;height:40px}
+  .campo-barra{display:flex;align-items:center;gap:10px}
+}
