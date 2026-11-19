@@ -127,3 +127,6 @@ body.home .campo-modo:hover,body.home .campo-filtro:hover{color:#fff}
 @media (min-width:900px){
   body.home .campo-barra{position:absolute;top:calc(22px + var(--extra));z-index:auto;height:40px}
 }
+
+/* toggle apagado: la pista lleva fondo (si no, quedaba un contorno vacío) */
+.campo-modo[aria-checked="false"] .campo-modo-pista{background:var(--papel)}

@@ -351,7 +351,11 @@
 
     /* ───────── Interruptor Objetos / Foto principal ───────── */
     var btnModo = campo.querySelector('[data-modo]');
-    var pintarModo = function () { if (btnModo) { btnModo.setAttribute('aria-checked', modoObjeto ? 'true' : 'false'); } };
+    var pintarModo = function () {
+      if (!btnModo) { return; }
+      btnModo.setAttribute('aria-checked', modoObjeto ? 'true' : 'false');
+      var rot = btnModo.querySelector('.campo-modo-t'); if (rot) { rot.textContent = modoObjeto ? 'Objetos' : 'Imagen'; }   // la palabra nombra lo que se muestra
+    };
     // fotos ↔ objetos: fundido cruzado. Una copia de la imagen anterior queda encima y se desvanece mientras la nueva aparece debajo.
     // Sólo cambian las piezas que tienen objeto; el resto no se toca.
     var DUR_FUNDIDO = 480;
