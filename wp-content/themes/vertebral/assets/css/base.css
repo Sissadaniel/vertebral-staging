@@ -168,3 +168,8 @@ html.nav-oculta .wp-block-template-part:has(> header.top){transform:translateY(-
 html.nav-oculta .listado-abrir{transform:translateY(-120px)}
 .listado-abrir{transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s ease,background .2s ease,color .2s ease}
 @media (prefers-reduced-motion:reduce){.wp-block-template-part:has(> header.top),.listado-abrir{transition:none}}
+
+/* cabecera con scroll: color liso sin textura (se funde sobre la capa de papel); arriba del todo conserva el papel */
+header.top::after{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background-color:var(--fondo,var(--crema));opacity:0;transition:opacity .3s ease,background-color 1.4s cubic-bezier(.4,0,.2,1)}
+html.nav-scroll header.top::after{opacity:1}
+body.home header.top::after{display:none}

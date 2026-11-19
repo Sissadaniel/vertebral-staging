@@ -23,13 +23,15 @@ window.VTB = window.VTB || { montar: [], vistas: {} };
   var cuando = function () {
     pend = false;
     var y = window.scrollY, d = y - ultimo; ultimo = y;
+    raiz.classList.toggle('nav-scroll', y > 2);                   // con scroll el fondo de la cabecera es de color liso; la textura solo arriba del todo
     if (y < 80) { raiz.classList.remove('nav-oculta'); acum = 0; return; }
     if (d === 0) { return; }
     acum = (acum * d > 0) ? acum + d : d;                 // se reinicia al cambiar de sentido
     if (acum > UMBRAL) { if (!document.querySelector('.wp-block-navigation__responsive-container.is-menu-open')) { raiz.classList.add('nav-oculta'); } }
     else if (acum < -UMBRAL) { raiz.classList.remove('nav-oculta'); }
   };
-  window.addEventListener('scroll', cuando, { passive: true });   // el cálculo es mínimo: sin rAF (que se pausa en pestañas ocultas)
+  window.addEventListener('scroll', cuando, { passive: true });
+  cuando();   // el cálculo es mínimo: sin rAF (que se pausa en pestañas ocultas)
   window.addEventListener('focusin', function (e) { if (e.target.closest && e.target.closest('header.top')) { raiz.classList.remove('nav-oculta'); } });
 })();
 
