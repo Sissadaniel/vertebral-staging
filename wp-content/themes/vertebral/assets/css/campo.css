@@ -117,3 +117,13 @@ body.home header.top > *{pointer-events:auto}
 .campo-filtro,.campo-modo{background:none!important;border:0!important;box-shadow:none!important;padding:0 6px}
 .campo-filtro:hover,.campo-modo:hover{background:none!important;color:var(--acento-texto)}
 .campo-filtro:hover .campo-filtro-sello{filter:none}
+
+/* inicio: logo, «Menú», «Filtrar» y «Objetos» se mezclan por diferencia con lo que pasa por debajo (blanco → oscuro sobre crema, claro sobre un objeto oscuro) */
+body.home header.top:not(:has(.is-menu-open)){mix-blend-mode:difference}
+body.home header.top:not(:has(.is-menu-open)) .marca-logo{background:#fff}
+body.home header.top:not(:has(.is-menu-open)) .wp-block-navigation__responsive-container-open{color:#fff}
+body.home .campo-modo-t,body.home .campo-filtro > span:first-child{color:#fff;mix-blend-mode:difference}
+body.home .campo-modo:hover,body.home .campo-filtro:hover{color:#fff}
+@media (min-width:900px){
+  body.home .campo-barra{position:absolute;top:calc(22px + var(--extra));z-index:auto;height:40px}
+}
