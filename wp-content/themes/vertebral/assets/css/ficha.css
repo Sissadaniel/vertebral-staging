@@ -61,7 +61,8 @@
 .vecino-lista{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto-suave);text-underline-offset:3px;font-family:var(--mono)}
 
 /* ───────── Cierre ───────── */
-.ficha-cierre{padding:96px var(--gutter) 112px;display:grid;gap:14px;justify-items:start}
+.ficha-cierre{padding:64px var(--gutter) 112px}
+.ficha-cierre .contacto-form{margin-top:0}
 .ficha-cierre h2{margin:0;font-size:clamp(26px,4vw,44px);max-width:20ch;text-wrap:balance}
 .ficha-cierre p{margin:0;color:var(--texto-suave);max-width:52ch}
 .cierre-acciones{display:flex;flex-wrap:wrap;gap:14px 24px;align-items:center;margin-top:10px!important}
