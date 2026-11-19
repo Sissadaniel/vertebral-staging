@@ -32,3 +32,32 @@ window.VTB = window.VTB || { montar: [], vistas: {} };
   window.addEventListener('scroll', cuando, { passive: true });   // el cálculo es mínimo: sin rAF (que se pausa en pestañas ocultas)
   window.addEventListener('focusin', function (e) { if (e.target.closest && e.target.closest('header.top')) { raiz.classList.remove('nav-oculta'); } });
 })();
+
+/* «Filtros activos»: arriba del cajón de filtros, una píldora por cada filtro aplicado (home y listado). Quitarla = pulsar el
+   filtro original (que ya sabe desmarcarse); se redibuja observando aria-pressed, así no depende de cómo guarde el estado cada vista. */
+window.VTB.montar.push(function (raiz) {
+  var sec = raiz.querySelector('[data-activos]');
+  if (!sec) { return; }
+  var lista = sec.querySelector('[data-activos-lista]');
+  var origen = Array.prototype.slice.call(raiz.querySelectorAll('.filtro[data-grupo][aria-pressed]'));
+  var pintar = function () {
+    var activos = origen.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; });
+    lista.textContent = '';
+    activos.forEach(function (b) {
+      var n = b.cloneNode(true); var c = n.querySelector('.filtro-n'); if (c) { c.remove(); }
+      var nombre = n.textContent.trim();
+      var p = document.createElement('button');
+      p.type = 'button'; p.className = 'filtro-activo';
+      p.setAttribute('aria-label', 'Quitar filtro ' + nombre);
+      p.innerHTML = '<span></span><i aria-hidden="true">&times;</i>';
+      p.firstChild.textContent = nombre;
+      p.addEventListener('click', function () { b.click(); });
+      lista.appendChild(p);
+    });
+    sec.hidden = !activos.length;
+  };
+  var mo = new MutationObserver(pintar);
+  origen.forEach(function (b) { mo.observe(b, { attributes: true, attributeFilter: ['aria-pressed'] }); });
+  pintar();
+  return function () { mo.disconnect(); };
+});

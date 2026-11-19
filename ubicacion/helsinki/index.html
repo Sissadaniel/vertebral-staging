@@ -55,7 +55,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 <link rel='stylesheet' id='vertebral-base-css' href='https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/css/base.css?ver=1795057876' media='all' />
 <link rel='stylesheet' id='vertebral-ficha-css' href='https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/css/ficha.css?ver=1795056661' media='all' />
 <link rel='stylesheet' id='vertebral-listado-css' href='https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/css/listado.css?ver=1795057254' media='all' />
-<link rel='stylesheet' id='vertebral-campo-css' href='https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/css/campo.css?ver=1795057881' media='all' />
+<link rel='stylesheet' id='vertebral-campo-css' href='https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/css/campo.css?ver=1795058007' media='all' />
 <script id="wp-importmap" type="importmap">
 {"imports":{"@wordpress/interactivity":"https://sissadaniel.github.io/vertebral-staging/wp-includes/js/dist/script-modules/interactivity/index.min.js?ver=6a43cba92ed701f32cd9"}}
 </script>
@@ -147,6 +147,13 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 			<button type="button" class="campo-cajon-cerrar" data-cajon-cerrar aria-label="Cerrar">&times;</button>
 		</header>
 		<div class="campo-cajon-cuerpo">
+			<div class="filtros-activos" data-activos hidden>
+				<div class="filtros-activos-cab">
+					<span class="filtro-rotulo">Filtros activos</span>
+					<button type="button" class="filtros-quitar" data-filtro-limpiar>Quitar filtros</button>
+				</div>
+				<div class="filtros-activos-lista" data-activos-lista></div>
+			</div>
 			<div class="filtro-grupo" role="group" aria-label="Tipología">
 				<span class="filtro-rotulo">Tipología</span>
 									<button type="button" class="etq filtro" data-grupo="tip" data-valor="residencial" aria-pressed="false">Residencial <span class="filtro-n">20</span></button>
@@ -189,7 +196,6 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 					</div>
 		<footer class="campo-cajon-pie">
 			<p class="campo-cajon-cuenta" aria-live="polite"><span data-cuenta-cajon>46</span> proyectos visibles</p>
-			<button type="button" class="etq" data-filtro-limpiar>Quitar filtros</button>
 		</footer>
 	</aside>
 
@@ -767,7 +773,7 @@ img:is([sizes=auto i],[sizes^="auto," i]){contain-intrinsic-size:3000px 1500px}
 {"prefetch":[{"source":"document","where":{"and":[{"href_matches":"/*"},{"not":{"href_matches":["/wp-*.php","/wp-admin/*","/wp-content/uploads/*","/wp-content/*","/wp-content/plugins/*","/wp-content/themes/vertebral/*","/*\\?(.+)"]}},{"not":{"selector_matches":"a[rel~=\"nofollow\"]"}},{"not":{"selector_matches":".no-prefetch, .no-prefetch a"}}]},"eagerness":"conservative"}]}
 </script>
 <script data-wp-router-options="{&quot;loadOnClientNavigation&quot;:true}" fetchpriority="low" id="@wordpress/block-library/navigation/view-js-module" src="https://sissadaniel.github.io/vertebral-staging/wp-includes/js/dist/script-modules/block-library/navigation/view.min.js?ver=1bf28ded04f9f188bdcb" type="module"></script>
-<script data-wp-strategy="defer" defer id="vertebral-base-js" src="https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/js/base.js?ver=1795057906"></script>
+<script data-wp-strategy="defer" defer id="vertebral-base-js" src="https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/js/base.js?ver=1795058007"></script>
 <script data-wp-strategy="defer" defer id="vertebral-ficha-js" src="https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/js/ficha.js?ver=1794963437"></script>
 <script data-wp-strategy="defer" defer id="vertebral-listado-js" src="https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/js/listado.js?ver=1794959918"></script>
 <script data-wp-strategy="defer" defer id="vertebral-campo-js" src="https://sissadaniel.github.io/vertebral-staging/wp-content/themes/vertebral/assets/js/campo.js?ver=1795057684"></script>

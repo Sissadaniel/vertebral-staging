@@ -131,3 +131,15 @@ body.home .campo-modo:hover,body.home .campo-filtro:hover{color:#fff}
 /* toggle apagado: la pista lleva fondo (si no, quedaba un contorno vacío) */
 .campo-modo[aria-checked="false"] .campo-modo-pista{background:var(--papel)}
 body.home .wp-block-template-part:has(> header.top){pointer-events:none}
+
+/* filtros activos (cajón de home y listado) */
+.filtros-activos{display:grid;gap:10px;padding-bottom:18px;margin-bottom:6px;border-bottom:1px solid var(--linea)}
+.filtros-activos[hidden]{display:none}
+.filtros-activos-cab{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.filtros-activos-lista{display:flex;flex-wrap:wrap;gap:8px}
+.filtro-activo{display:inline-flex;align-items:center;gap:8px;font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;line-height:1;color:var(--crema);background:var(--texto);border:1px solid var(--texto);border-radius:999px;padding:8px 8px 8px 14px;cursor:pointer;transition:background .2s ease,border-color .2s ease}
+.filtro-activo i{font-style:normal;font-size:15px;line-height:1;display:grid;place-items:center;width:18px;height:18px;border-radius:50%;background:rgb(var(--crema-rgb) / .18)}
+.filtro-activo:hover{background:var(--acento-texto);border-color:var(--acento-texto)}
+.filtro-activo:focus-visible{outline:2px solid var(--acento-texto);outline-offset:2px}
+.filtros-quitar{font:inherit;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--acento-texto);background:none;border:0;border-bottom:1px solid currentColor;padding:0 0 2px;cursor:pointer}
+.filtros-quitar:hover{color:var(--texto)}
