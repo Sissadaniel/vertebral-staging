@@ -3,7 +3,7 @@
 body.home{overflow:hidden}
 body.home header.top::before{opacity:0}
 body.home .pie{display:none}
-.campo{position:relative;height:calc(100svh - var(--header-alto));overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;background:transparent}
+.campo{--extra:36px;position:relative;height:calc(100svh + 2 * var(--extra));margin:calc(-1 * (var(--header-alto) + var(--extra))) 0 calc(-1 * var(--extra));overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;background:transparent}
 .campo.arrastrando{cursor:grabbing}
 .campo-escena{position:absolute;inset:0}
 .campo-rejilla{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
@@ -18,7 +18,7 @@ body.home .pie{display:none}
 .campo.saliendo .campo-tile:not(.elegida) img{opacity:0;transition:opacity .35s ease}
 .campo-tile.elegida img{opacity:1;filter:none}
 
-.campo-zoom{position:absolute;left:50%;bottom:28px;width:min(560px,80vw);height:46px;transform:translateX(-50%);transition:opacity .35s ease;cursor:pointer}
+.campo-zoom{position:absolute;left:50%;bottom:calc(28px + var(--extra));width:min(560px,80vw);height:46px;transform:translateX(-50%);transition:opacity .35s ease;cursor:pointer}
 .campo-zoom[hidden]{display:none}
 .regla{position:absolute;inset:0;pointer-events:none;
   background:
@@ -36,11 +36,11 @@ body.home .pie{display:none}
 .sitio-main.fuera{opacity:0}
 @media (prefers-reduced-motion:reduce){ .campo-tile img{transition:none} .sitio-main{transition:none} }
 /* con la barra de administración visible (solo editores con sesión iniciada) */
-body.admin-bar .campo{height:calc(100svh - var(--header-alto) - var(--wp-admin--admin-bar--height,0px))}
+body.admin-bar .campo{height:calc(100svh + 2 * var(--extra) - var(--wp-admin--admin-bar--height,0px))}
 body.admin-bar .pv{height:calc(100svh - var(--header-alto) - var(--wp-admin--admin-bar--height,0px))}
 
 /* Filtro de la portada: botón arriba a la derecha y cajón lateral */
-.campo-barra{position:absolute;top:18px;right:var(--gutter);z-index:5;display:flex;align-items:center;gap:10px;transition:opacity .35s ease}
+.campo-barra{position:absolute;top:calc(var(--header-alto) + var(--extra) + 18px);right:var(--gutter);z-index:5;display:flex;align-items:center;gap:10px;transition:opacity .35s ease}
 .campo.saliendo .campo-barra{opacity:0;pointer-events:none}
 .campo-filtro{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--texto);background:var(--papel);border:1px solid var(--linea);padding:9px 14px;line-height:1;cursor:pointer;box-shadow:0 1px 0 rgb(var(--texto-rgb) / .1),0 8px 16px -10px rgb(var(--texto-rgb) / .45);transition:opacity .35s ease,background .2s ease,color .2s ease;font-family:var(--mono)}
 .campo-filtro:hover{background:var(--texto);color:var(--crema);border-color:var(--texto)}
@@ -108,3 +108,7 @@ body.admin-bar .pv{height:calc(100svh - var(--header-alto) - var(--wp-admin--adm
   .campo-barra,.listado-abrir{position:fixed;top:22px;right:calc(var(--gutter) + 104px + 18px);z-index:40;height:40px}
   .campo-barra{display:flex;align-items:center;gap:10px}
 }
+
+/* el campo ocupa toda la pantalla, por debajo de la cabecera (que deja pasar el puntero), y se pasa un poco por arriba y por abajo */
+body.home header.top{pointer-events:none}
+body.home header.top > *{pointer-events:auto}
