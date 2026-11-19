@@ -112,3 +112,8 @@ body.admin-bar .pv{height:calc(100svh - var(--header-alto) - var(--wp-admin--adm
 /* el campo ocupa toda la pantalla, por debajo de la cabecera (que deja pasar el puntero), y se pasa un poco por arriba y por abajo */
 body.home header.top{pointer-events:none}
 body.home header.top > *{pointer-events:auto}
+
+/* filtro y toggle sin decoración (sin fondo, borde ni sombra): solo texto + glifo */
+.campo-filtro,.campo-modo{background:none!important;border:0!important;box-shadow:none!important;padding:0 6px}
+.campo-filtro:hover,.campo-modo:hover{background:none!important;color:var(--acento-texto)}
+.campo-filtro:hover .campo-filtro-sello{filter:none}

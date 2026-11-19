@@ -151,3 +151,6 @@ header.top .wp-block-navigation__responsive-container-close::after{content:'Cerr
   header.top .wp-block-navigation__responsive-container-open::after{content:none}
   header.top .wp-block-navigation__responsive-container-open{width:40px;justify-content:center}
 }
+
+/* burger y cierre invertidos: la palabra a la izquierda y el glifo a la derecha */
+header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-navigation__responsive-container-close{flex-direction:row-reverse;justify-content:flex-start}
