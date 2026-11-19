@@ -119,7 +119,7 @@ body.home header.top > *{pointer-events:auto}
 .campo-filtro:hover .campo-filtro-sello{filter:none}
 
 /* inicio: logo, «Menú», «Filtrar» y «Objetos» se mezclan por diferencia con lo que pasa por debajo (blanco → oscuro sobre crema, claro sobre un objeto oscuro) */
-body.home header.top:not(:has(.is-menu-open)){mix-blend-mode:difference}
+body.home .wp-block-template-part:has(> header.top):not(:has(.is-menu-open)){mix-blend-mode:difference}
 body.home header.top:not(:has(.is-menu-open)) .marca-logo{background:#fff}
 body.home header.top:not(:has(.is-menu-open)) .wp-block-navigation__responsive-container-open{color:#fff}
 body.home .campo-modo-t,body.home .campo-filtro > span:first-child{color:#fff;mix-blend-mode:difference}
@@ -130,3 +130,4 @@ body.home .campo-modo:hover,body.home .campo-filtro:hover{color:#fff}
 
 /* toggle apagado: la pista lleva fondo (si no, quedaba un contorno vacío) */
 .campo-modo[aria-checked="false"] .campo-modo-pista{background:var(--papel)}
+body.home .wp-block-template-part:has(> header.top){pointer-events:none}

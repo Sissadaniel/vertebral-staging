@@ -25,7 +25,7 @@ img{max-width:100%;height:auto}
 *{scrollbar-color:var(--acento) transparent}
 
 /* Cabecera (idéntica en espíritu a header.top de los prototipos) */
-header.top{position:sticky;top:0;z-index:30;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:22px var(--gutter);background:none;border-bottom:0}
+header.top{position:relative;display:flex;align-items:baseline;justify-content:space-between;flex-wrap:wrap;gap:10px 24px;padding:22px var(--gutter);background:none;border-bottom:0}
 header.top::before{content:'';position:absolute;inset:0;z-index:-1;pointer-events:none;background-color:var(--fondo,var(--crema));background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;background-attachment:fixed;transition:background-color 1.4s cubic-bezier(.4,0,.2,1),opacity .7s ease}
 header.top .marca{font-size:12px;letter-spacing:.28em;text-transform:uppercase;color:var(--acento-texto);text-decoration:none;font-family:var(--mono)}
 header.top .marca:hover{color:var(--texto)}
@@ -129,7 +129,7 @@ h1,h2,h3,h4,h5,h6,.wp-block-post-title,.tarjeta-nombre,.vecino-nombre,.wp-block-
 }
 @keyframes hoja-sube{from{transform:translateY(40px);opacity:0}to{transform:none;opacity:1}}
 @media (prefers-reduced-motion:reduce){header.top .wp-block-navigation__responsive-container-content{animation:none!important}}
-header.top:has(.wp-block-navigation__responsive-container.is-menu-open){z-index:100000}
+.wp-block-template-part:has(.wp-block-navigation__responsive-container.is-menu-open){z-index:100000}
 @media (max-width:720px){
   header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-dialog{display:flex;flex-direction:column;justify-content:flex-end;width:100%;min-height:100%;margin:0}
 }
@@ -160,3 +160,11 @@ header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-
 /* en la ficha de proyecto la textura de papel se desplaza con la página (no queda fija al viewport) */
 body.single-proyecto{background-attachment:scroll}
 body.single-proyecto header.top::before{background-attachment:scroll}
+
+/* cabecera que se esconde al bajar (html.nav-oculta la pone base.js) */
+/* el sticky/fixed va en el contenedor de la parte de plantilla (el <header> es su único hijo: dentro de él nunca se pegaría) */
+.wp-block-template-part:has(> header.top){position:sticky;top:0;z-index:30;transition:transform .35s cubic-bezier(.4,0,.2,1)}
+html.nav-oculta .wp-block-template-part:has(> header.top){transform:translateY(-100%)}
+html.nav-oculta .listado-abrir{transform:translateY(-120px)}
+.listado-abrir{transition:transform .35s cubic-bezier(.4,0,.2,1),opacity .35s ease,background .2s ease,color .2s ease}
+@media (prefers-reduced-motion:reduce){.wp-block-template-part:has(> header.top),.listado-abrir{transition:none}}
