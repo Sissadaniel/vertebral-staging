@@ -1,6 +1,7 @@
 /* Listado de proyectos: lista convencional (A–Z / año), buscador, filtros y foto al pasar el cursor. */
 
-.listado{padding:40px var(--gutter) 96px;--gap:18px}
+.listado{position:relative;padding:40px var(--gutter) 96px;--gap:18px}
+.listado-abrir{position:absolute;top:19px;right:var(--gutter);z-index:5}   /* mismo sitio que .campo-barra en el inicio: el botón no se mueve al cambiar de página */
 
 /* ───────── Cabecera y filtros ───────── */
 .listado-cabecera{margin-bottom:36px}

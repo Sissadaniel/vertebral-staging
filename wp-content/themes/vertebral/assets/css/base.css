@@ -36,8 +36,8 @@ header.top .wp-block-navigation .wp-block-navigation__container{gap:10px 26px}
 header.top .wp-block-navigation a{color:var(--texto-suave);text-decoration:none;padding-bottom:3px;border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
 header.top .wp-block-navigation a:hover{color:var(--texto)}
 header.top .wp-block-navigation .current-menu-item > a,header.top .wp-block-navigation a[aria-current="page"]{color:var(--texto);border-color:var(--texto)}
-header.top .wp-block-navigation__responsive-container.is-menu-open{background-color:var(--fondo,var(--crema))!important;background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;color:var(--texto);padding:22px clamp(10px,1.6vw,20px)}
-header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content{padding-top:12vh;align-items:stretch;width:100%}
+header.top .wp-block-navigation__responsive-container.is-menu-open{background-color:var(--fondo,var(--crema))!important;background-image:url(../marca/papel.jpg);background-size:500px 500px;background-blend-mode:multiply;color:var(--texto);padding:0}
+header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-content{padding:12vh clamp(10px,1.6vw,20px) 22px;box-sizing:border-box;align-items:stretch;width:100%}
 header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__container{display:block;width:100%;border-top:1px solid var(--linea);padding:0;margin:0}
 header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item{display:block;width:100%;border-bottom:1px solid var(--linea)}
 header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation-item__content{display:block;width:100%;box-sizing:border-box;font-size:clamp(30px,6vw,64px);font-weight:700;line-height:1.1;letter-spacing:.04em;color:var(--texto);padding:clamp(14px,2.4vh,26px) 4px;border:0;transition:padding-left .35s var(--salida),background-color .25s ease,color .25s ease}
@@ -132,4 +132,10 @@ h1,h2,h3,h4,h5,h6,.wp-block-post-title,.tarjeta-nombre,.vecino-nombre,.wp-block-
 header.top:has(.wp-block-navigation__responsive-container.is-menu-open){z-index:100000}
 @media (max-width:720px){
   header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-dialog{display:flex;flex-direction:column;justify-content:flex-end;width:100%;min-height:100%;margin:0}
+}
+
+/* el cierre del menú ocupa exactamente el sitio del burger (sin saltos) y la barra de scroll no aparece/desaparece al abrir */
+html{scrollbar-gutter:stable}
+@media (min-width:721px){
+  header.top .wp-block-navigation__responsive-container.is-menu-open .wp-block-navigation__responsive-container-close{position:absolute;top:22px;right:var(--gutter);left:auto;margin:0;padding:6px;width:40px;height:40px;box-sizing:border-box;display:grid;place-items:center}
 }

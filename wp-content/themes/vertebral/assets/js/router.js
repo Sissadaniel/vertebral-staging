@@ -227,6 +227,8 @@
     var a = e.target.closest && e.target.closest('a[href]');
     if (!enlaceInterno(a)) { return; }
     e.preventDefault();
+    var menuAbierto = a.closest('.wp-block-navigation__responsive-container.is-menu-open');   // un enlace del menú lo cierra
+    if (menuAbierto) { var cerrar = menuAbierto.querySelector('.wp-block-navigation__responsive-container-close'); if (cerrar) { cerrar.click(); } }
     var opts = {};
     var tarjeta = a.closest('.pieza-enlace');
     if (tarjeta) { opts.imgOrigen = tarjeta.querySelector('img.base'); }     // listado → ficha: vuela la foto de la tarjeta
