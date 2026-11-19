@@ -31,7 +31,7 @@ header.top .marca{font-size:12px;letter-spacing:.28em;text-transform:uppercase;c
 header.top .marca:hover{color:var(--texto)}
 header.top .marca-logo{display:block;width:clamp(120px,14vw,168px);aspect-ratio:800/73;background:var(--texto);-webkit-mask:url(../marca/vertebral-logo.png) center/contain no-repeat;mask:url(../marca/vertebral-logo.png) center/contain no-repeat;transition:background-color .25s ease}
 header.top .marca:hover .marca-logo{background:var(--acento-texto)}
-header.top .wp-block-navigation{font-size:12px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
+header.top .wp-block-navigation{font-size:14px;letter-spacing:.06em;text-transform:uppercase;font-family:var(--mono)}
 header.top .wp-block-navigation .wp-block-navigation__container{gap:10px 26px}
 header.top .wp-block-navigation a{color:var(--texto-suave);text-decoration:none;padding-bottom:3px;border-bottom:1px solid transparent;transition:color .25s ease,border-color .25s ease}
 header.top .wp-block-navigation a:hover{color:var(--texto)}
@@ -55,7 +55,7 @@ header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-
 .pagina a{text-underline-offset:3px}
 
 /* Pie */
-.pie{padding:56px var(--gutter) 40px;border-top:1px solid var(--linea);background:var(--crema-2);font-size:13px}
+.pie{padding:56px var(--gutter) 40px;border-top:1px solid var(--linea);background:var(--crema-2);font-size:14px}
 .pie-contacto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px 40px}
 .pie-contacto p{margin:0;display:flex;flex-direction:column;gap:2px}
 .pie-contacto span{color:var(--texto-suave);font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-family:var(--mono)}
