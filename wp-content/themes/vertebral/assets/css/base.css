@@ -70,6 +70,15 @@ header.top .wp-block-navigation__responsive-container-open,header.top .wp-block-
 .pie a{color:var(--texto);text-underline-offset:3px}
 .pie a:hover{color:var(--acento-texto)}
 .pie-legal{margin:40px 0 0;color:var(--texto-suave);font-size:12px}
+.pie{padding-bottom:48px}
+.subpie{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:12px 32px;padding:22px var(--gutter);border-top:1px solid var(--linea);background:var(--crema-2);font-size:12px;color:var(--texto-suave)}
+.subpie p{margin:0}
+.subpie-logo span{display:block;width:120px;aspect-ratio:800/73;background:var(--texto);-webkit-mask:url(../marca/vertebral-logo.png) center/contain no-repeat;mask:url(../marca/vertebral-logo.png) center/contain no-repeat}
+.subpie-logo:hover span{background:var(--acento-texto)}
+.subpie-legal{display:flex;gap:18px;flex-wrap:wrap;justify-content:flex-end}
+.subpie a{color:var(--texto);text-underline-offset:3px}
+.subpie-legal a:hover{color:var(--acento-texto)}
+@media (max-width:720px){.subpie{grid-template-columns:1fr}.subpie-legal{justify-content:flex-start}}
 
 @media (max-width:720px){ :root{--gutter:20px} header.top{padding:16px var(--gutter)} }
 @media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }   /* el resto se resuelve por componente: se conserva el cambio de estado, se quita el desplazamiento */

@@ -2,7 +2,7 @@
 
 body.home{overflow:hidden}
 body.home header.top::before{opacity:0;transition:none}   /* sin fundido al entrar al inicio: con la mezcla por diferencia, el fondo crema aún visible se veía negro unos instantes */
-body.home .pie{display:none}
+body.home .pie,body.home .subpie{display:none}
 .campo{--extra:36px;position:relative;height:calc(100svh + 2 * var(--extra));margin:calc(-1 * (var(--header-alto) + var(--extra))) 0 calc(-1 * var(--extra));overflow:hidden;cursor:grab;touch-action:none;user-select:none;-webkit-user-select:none;background:transparent}
 .campo.arrastrando{cursor:grabbing}
 .campo-escena{position:absolute;inset:0}
