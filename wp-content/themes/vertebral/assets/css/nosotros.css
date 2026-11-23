@@ -4,7 +4,7 @@
 .nos{display:flex;flex-direction:column;gap:28px;padding:20px var(--gutter) 64px;color:var(--texto)}
 .nos figure{margin:0}
 .nos-img{display:block;width:100%;height:100%;object-fit:cover}
-.nos-triangulo{display:block;margin:0 auto;color:#000}
+.nos-triangulo{display:block;margin:0 auto;width:30px;height:auto}
 .nos-fundadores .nos-img,.nos-equipo-foto .nos-img,.nos-objetos-foto .nos-img,.nos-estudio-foto .nos-img{height:auto}
 .nos-pie-foto{margin:-18px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.14em;line-height:1.5}
 .nos-manifiesto p,.nos-objetos p,.nos-emblema,.nos-anteriores p{font-family:var(--cuerpo);font-size:14px;line-height:1.7;letter-spacing:.03em;margin:0}

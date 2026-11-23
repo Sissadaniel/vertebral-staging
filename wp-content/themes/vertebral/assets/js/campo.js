@@ -172,6 +172,7 @@
       var x = ptr.dentro ? ptr.x : W / 2, y = ptr.dentro ? ptr.y : H / 2;
       var cr = celdaCercana(x, y), t = tiles.get(cr[0] + ',' + cr[1]);
       if (t && t.el.classList.contains('fuera')) { t = null; }
+      if (!ptr.dentro && !ptr.visto && window.matchMedia('(hover:hover)').matches) { t = null; }   // con ratón, al abrir no hay hover hasta que el puntero entra
       if (t && ptr.dentro) {   // con el puntero encima, sólo cuenta si está realmente sobre la imagen (sin margen alrededor)
         var ri = t.img.getBoundingClientRect(), eb = escena.getBoundingClientRect(), px = ptr.x + eb.left, py = ptr.y + eb.top;
         if (px < ri.left || px > ri.right || py < ri.top || py > ri.bottom) { t = null; }
@@ -252,7 +253,7 @@
     });
     oyente(escena, 'pointermove', function (e) {
       var b = escena.getBoundingClientRect();
-      ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.dentro = e.pointerType === 'mouse';
+      ptr.x = e.clientX - b.left; ptr.y = e.clientY - b.top; ptr.dentro = e.pointerType === 'mouse'; ptr.visto = true;
       if (punteros.has(e.pointerId)) { punteros.set(e.pointerId, { x: e.clientX, y: e.clientY }); }
       if (arrastra) {
         var dx = e.clientX - px, dy = e.clientY - py;
