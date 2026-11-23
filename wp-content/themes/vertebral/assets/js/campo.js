@@ -15,9 +15,10 @@
   var TILE = ESTRECHO ? 200 : 264, HUECO_MAX = 1.25, HUECO_MIN = 0.75, COLS_MAX = 7;
   var STEP = ESTRECHO ? 320 : 400;   // paso fijo entre celdas: ya no hay zoom
   var ZINICIO = 1;                               // tamaño fijo: el que tenía el campo al 100 %
-  var modoObjeto = true;                         // true: las celdas con objeto sin fondo lo muestran; false: siempre la foto principal
+  var modoObjeto = true; try { if (localStorage.getItem('vtb_modo') === 'fotos') { modoObjeto = false; } } catch (e) {}   // el navegador recuerda la última elección del visitante
+  //                        // true: las celdas con objeto sin fondo lo muestran; false: siempre la foto principal
   if (window.VTB) { VTB.modoObjetoActivo = function () { return modoObjeto; }; }   // el router lo consulta para decidir el origen del vuelo de vuelta
-  var filtroGuardado = { tip: [], pais: [], ctx: [] };   // el filtro elegido sobrevive al ir a una ficha y volver
+  var filtroGuardado = { tip: [], pais: [], ctx: [], kw: [] };   // el filtro elegido sobrevive al ir a una ficha y volver
   var JIT_POS = 28;                                    // amplitud del desplazamiento aleatorio de cada celda (px por eje)
   var ONDA = 12;                                       // amplitud de una ondulación suave que rompe las filas y columnas rectas
   var ruido = function (c, r, sal) { var x = Math.sin(c * 127.1 + r * 311.7 + sal * 74.7) * 43758.5453; return x - Math.floor(x); };
@@ -177,32 +178,49 @@
       t.el.classList.add('foco');
     };
 
-    /* ───────── Vista previa que sigue al puntero: sobre cualquier celda (objeto o foto) aparece la foto del proyecto en grande, sin título ───────── */
+    /* ───────── Vista previa que sigue al puntero: sobre cualquier celda (objeto o foto) aparece la foto del proyecto en grande con su título, lugar, tipología y año debajo ───────── */
     var previa = document.createElement('div'); previa.className = 'campo-previa'; previa.setAttribute('aria-hidden', 'true');
     var previaImg = document.createElement('img'); previaImg.alt = ''; previaImg.decoding = 'async'; previa.appendChild(previaImg);
-    var previaNombre = document.createElement('span'); previaNombre.className = 'campo-previa-nombre'; previa.appendChild(previaNombre);
-    var previaAnio = document.createElement('span'); previaAnio.className = 'campo-previa-anio'; previa.appendChild(previaAnio);
+    var previaNombre = document.createElement('span'); previaNombre.className = 'campo-previa-nombre';
+    var previaTexto = document.createElement('div'); previaTexto.className = 'campo-previa-texto'; previa.appendChild(previaTexto); previaTexto.appendChild(previaNombre);
+    var previaPie = document.createElement('div'); previaPie.className = 'campo-previa-pie'; previaTexto.appendChild(previaPie);
+    var previaDatos = document.createElement('span'); previaDatos.className = 'campo-previa-datos'; previaPie.appendChild(previaDatos);
+    var previaAnio = document.createElement('span'); previaAnio.className = 'campo-previa-anio'; previaPie.appendChild(previaAnio);
     escena.appendChild(previa);
     var previaId = null;
     var actualizarPrevia = function () {
       var t = focoActual, p = t && datos[t.i];
       var ver = !!(p && ptr.dentro && !arrastra && !bloqueado && !campo.classList.contains('saliendo'));
-      if (!ver) { previa.classList.remove('visible'); return; }
+      if (ver) {   // sólo si el puntero está realmente sobre la imagen de la pieza, sin margen alrededor
+        var ri = t.img.getBoundingClientRect(), eb = escena.getBoundingClientRect(), px = ptr.x + eb.left, py = ptr.y + eb.top;
+        ver = px >= ri.left && px <= ri.right && py >= ri.top && py <= ri.bottom;
+      }
+      if (!ver) { previa.classList.remove('visible'); campo.classList.remove('con-previa'); tiles.forEach(function (tl) { tl.el.classList.remove('tapada'); }); return; }
       if (previaId !== p.id) {
         previaId = p.id; previaImg.src = p.grande || p.mini;
         previa.style.setProperty('--ar', p.ar || 1.5);
-        rotular(previaNombre, p.titulo, p.id);
+        previaNombre.textContent = p.titulo;
+        previaDatos.textContent = ''; [p.lugar, p.tip_n].forEach(function (t) { if (t) { var l = document.createElement('span'); l.textContent = t; previaDatos.appendChild(l); } });
         previaAnio.textContent = p.anio ? String(p.anio) : '';
       }
       var w = previa.offsetWidth || 320, h = previa.offsetHeight || 220;
       var x = ptr.x + 26, y = ptr.y - h - 18;
       if (x + w > W - 12) { x = ptr.x - w - 26; }
       if (y < 12) { y = ptr.y + 24; }
-      previa.style.transform = 'translate(' + Math.max(12, x).toFixed(1) + 'px,' + Math.max(12, Math.min(y, H - h - 12)).toFixed(1) + 'px)';
-      previa.classList.add('visible');
+      var vis = Math.min(H, window.innerHeight - campo.getBoundingClientRect().top);   // el campo es más alto que la ventana: lo visible acaba en el borde inferior del viewport
+      previa.classList.toggle('texto-arriba', y + h > vis - 12);                        // si el texto se cortaría abajo, va encima de la foto
+      previa.style.transform = 'translate(' + Math.max(12, x).toFixed(1) + 'px,' + Math.max(12, Math.min(y, vis - h - 12)).toFixed(1) + 'px)';
+      previa.classList.add('visible'); campo.classList.add('con-previa');
+      // sólo se aclaran las piezas que tocan la tarjeta de vista previa
+      var pr = previa.getBoundingClientRect();
+      tiles.forEach(function (tl) {
+        var r = tl.img.getBoundingClientRect();
+        tl.el.classList.toggle('tapada', r.right > pr.left && r.left < pr.right && r.bottom > pr.top && r.top < pr.bottom);
+      });
     };
 
-    var tick = function () { raf = 0; sincronizar(); actualizarFoco(); actualizarPrevia(); };
+    var ocultarBajoZonas = null;
+    var tick = function () { raf = 0; sincronizar(); if (ocultarBajoZonas) { ocultarBajoZonas(); } actualizarFoco(); actualizarPrevia(); };
     var pedirTick = function () { if (!raf) { raf = requestAnimationFrame(tick); } };
 
     /* ───────── Zoom ───────── */
@@ -354,7 +372,7 @@
     var pintarModo = function () {
       if (!btnModo) { return; }
       btnModo.setAttribute('aria-checked', modoObjeto ? 'true' : 'false');
-      var rot = btnModo.querySelector('.campo-modo-t'); if (rot) { rot.textContent = modoObjeto ? 'Objetos' : 'Imagen'; }   // la palabra nombra lo que se muestra
+      var rot = btnModo.querySelector('.campo-modo-t'); if (rot) { rot.textContent = modoObjeto ? 'Emblemas' : 'Imágenes'; }   // la palabra nombra lo que se muestra
     };
     // fotos ↔ objetos: fundido cruzado. Una copia de la imagen anterior queda encima y se desvanece mientras la nueva aparece debajo.
     // Sólo cambian las piezas que tienen objeto; el resto no se toca.
@@ -381,7 +399,7 @@
         var ar = t.img.animate([{ opacity: 0 }, { opacity: op }], Object.assign({}, opt, { fill: 'both' }));
         ar.onfinish = function () {                       // devolver el control a la hoja de estilos sin que salte ni se anime
           if (t.tok !== tok) { return; }
-          t.img.style.opacity = ''; void t.img.offsetWidth; t.img.style.transition = '';
+          t.img.style.opacity = ''; ar.cancel(); void t.img.offsetWidth; t.img.style.transition = '';   // cancel(): el fill 'both' terminado seguiría imponiendo la opacidad sobre la hoja de estilos
         };
         var a = fantasma.animate([{ opacity: op }, { opacity: 0 }], Object.assign({}, opt, { fill: 'forwards' }));
         a.onfinish = function () { if (t.fantasma === fantasma) { fantasma.remove(); t.fantasma = null; } };
@@ -396,7 +414,7 @@
     };
     if (btnModo) {
       pintarModo();
-      oyente(btnModo, 'click', function () { clearTimeout(tLlegada); cambiarModo(!modoObjeto); });
+      oyente(btnModo, 'click', function () { clearTimeout(tLlegada); cambiarModo(!modoObjeto); try { localStorage.setItem('vtb_modo', modoObjeto ? 'objetos' : 'fotos'); } catch (e) {} });
     }
     // «Proyectos» del menú llega con ?modo=fotos: el campo abre con las fotos y, tras una pausa, el interruptor se enciende solo para que se vea el cambio
     var tLlegada = 0;
@@ -416,18 +434,18 @@
     var filtroN = campo.querySelector('[data-filtro-n]'), filtroCuenta = campo.querySelector('[data-filtro-cuenta]'), filtroVacio = campo.querySelector('[data-filtro-vacio]');
     var pildoras = [].slice.call(campo.querySelectorAll('.filtro[data-grupo]'));
     var coincide = function (p, f) {
-      return (!f.tip.length || p.tip.some(function (t) { return f.tip.indexOf(t) > -1; })) && (!f.pais.length || f.pais.indexOf(p.pais) > -1) && (!f.ctx.length || (p.ctx || []).some(function (t) { return f.ctx.indexOf(t) > -1; }));
+      return (!f.tip.length || p.tip.some(function (t) { return f.tip.indexOf(t) > -1; })) && (!f.pais.length || f.pais.indexOf(p.pais) > -1) && (!f.ctx.length || (p.ctx || []).some(function (t) { return f.ctx.indexOf(t) > -1; })) && (!f.kw.length || (p.kw || []).some(function (t) { return f.kw.indexOf(t) > -1; }));
     };
     var pintarPildoras = function () {
       pildoras.forEach(function (b) { b.setAttribute('aria-pressed', filtroGuardado[b.dataset.grupo].indexOf(b.dataset.valor) > -1 ? 'true' : 'false'); });
-      var activos = filtroGuardado.tip.length + filtroGuardado.pais.length + filtroGuardado.ctx.length;
+      var activos = filtroGuardado.tip.length + filtroGuardado.pais.length + filtroGuardado.ctx.length + filtroGuardado.kw.length;
       if (filtroN) { filtroN.hidden = !activos; filtroN.textContent = String(activos); }
       var cuantos = todos.filter(function (p) { return coincide(p, filtroGuardado); }).length;
       if (filtroCuenta) { filtroCuenta.textContent = String(cuantos); }
       if (filtroVacio) { filtroVacio.hidden = cuantos > 0; }
       return cuantos;
     };
-    var hayFiltro = function () { return filtroGuardado.tip.length + filtroGuardado.pais.length + filtroGuardado.ctx.length > 0; };
+    var hayFiltro = function () { return filtroGuardado.tip.length + filtroGuardado.pais.length + filtroGuardado.ctx.length + filtroGuardado.kw.length > 0; };
     // los proyectos que no cumplen el filtro siguen en el campo, muy tenues y sin poder entrar a ellos
     var marcarTile = function (t) { t.el.classList.toggle('fuera', hayFiltro() && !coincide(datos[t.i], filtroGuardado)); };
     // con un filtro activo el campo se reduce a los resultados: se agrupan en el centro y el resto desaparece (sin filtro, vuelve el campo completo)
@@ -468,20 +486,20 @@
     // llegada desde el menú: «Proyectos» limpia el filtro; una tipología lo deja con esa tipología
     if (tipParam || /[?&]modo=fotos\b/.test(location.search) || VTB.reiniciarFiltro) {
       VTB.reiniciarFiltro = false;
-      filtroGuardado = { tip: [], pais: [], ctx: [] };
+      filtroGuardado = { tip: [], pais: [], ctx: [], kw: [] };
       if (tipParam && pildoras.some(function (p) { return p.dataset.grupo === 'tip' && p.dataset.valor === tipParam; })) { filtroGuardado.tip = [tipParam]; }
     }
     pildoras.forEach(function (b) {
       oyente(b, 'click', function () {
         // un solo filtro a la vez: elegir uno reemplaza al anterior (sea tipología o país); volver a pulsarlo lo quita
         var activo = filtroGuardado[b.dataset.grupo].indexOf(b.dataset.valor) > -1;
-        filtroGuardado = { tip: [], pais: [], ctx: [] };
+        filtroGuardado = { tip: [], pais: [], ctx: [], kw: [] };
         if (!activo) { filtroGuardado[b.dataset.grupo] = [b.dataset.valor]; }
         cambiarFiltro();
       });
     });
     var limpiar = campo.querySelector('[data-filtro-limpiar]');
-    if (limpiar) { oyente(limpiar, 'click', function () { filtroGuardado = { tip: [], pais: [], ctx: [] }; cambiarFiltro(); }); }
+    if (limpiar) { oyente(limpiar, 'click', function () { filtroGuardado = { tip: [], pais: [], ctx: [], kw: [] }; cambiarFiltro(); }); }
     var abrirCajon = function () {
       cajon.hidden = false; fondo.hidden = false; btnFiltro.setAttribute('aria-expanded', 'true');
       void cajon.offsetWidth;                          // fija el estado cerrado antes de animar la apertura
@@ -521,18 +539,61 @@
 
     if (!vistaGuardada || !volverA) {
       if (!quieto) {
-        // aparición: las piezas surgen desde el centro hacia afuera
+        // aparición: las piezas nacen en el centro de la pantalla y se expanden hacia afuera hasta su lugar (las más cercanas al centro primero)
+        var eb = escena.getBoundingClientRect(), cx = W / 2 + eb.left, cy = H / 2 + eb.top;
         campo.classList.add('intro');
         tiles.forEach(function (t) {
-          var r = t.el.getBoundingClientRect(), d = Math.hypot(r.left + r.width / 2 - (W / 2), r.top + r.height / 2 - (H / 2 + escena.getBoundingClientRect().top));
-          t.img.style.transitionDelay = Math.min(900, d * 0.9) + 'ms';
+          var r = t.el.getBoundingClientRect(), mx = r.left + r.width / 2, my = r.top + r.height / 2;
+          var d = Math.hypot(mx - cx, my - cy), dx = (cx - mx) / escala, dy = (cy - my) / escala;
+          var dl = Math.min(700, d * 0.7);
+          t.img.style.transitionDelay = dl + 'ms';
+          if (t.el.animate) {
+            t.el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.15)' }, { transform: 'none' }],
+              { duration: 1100, delay: dl, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
+          }
         });
         requestAnimationFrame(function () { requestAnimationFrame(function () {
           campo.classList.remove('intro');
-          setTimeout(function () { tiles.forEach(function (t) { t.img.style.transitionDelay = ''; }); }, 1900);
+          setTimeout(function () { tiles.forEach(function (t) { t.img.style.transitionDelay = ''; }); if (typeof zonasPedir === 'function') { zonasPedir(); } }, 2000);
         }); });
       }
     }
+
+    // Zonas protegidas: el logo, el menú, los filtros y el lema de la esquina nunca tienen una imagen o emblema detrás, a ningún tamaño de pantalla.
+    // El campo (escena) se enmascara con un hueco por cada zona (los huecos que se tocan se funden en uno), recalculado al cambiar tamaño o contenido.
+    var zonasEls = function () {
+      var out = [], q = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
+      q('header.top .marca, header.top .wp-block-navigation__container > li, header.top .wp-block-navigation__responsive-container-open').forEach(function (e) { out.push(e); });
+      q('.campo-modo, .campo-filtro, .filtro-activo-barra', campo).forEach(function (e) { out.push(e); });
+      q('.campo-lema span', campo).forEach(function (e) { out.push(e); });
+      return out;
+    };
+    var zonasRects = [];
+    var protegerZonas = function () {
+      var PAD = 12;
+      zonasRects = [];
+      zonasEls().forEach(function (e) {
+        var r = e.getBoundingClientRect();
+        if (r.width < 2 || r.height < 2 || getComputedStyle(e).visibility === 'hidden') { return; }
+        zonasRects.push([r.left - PAD, r.top - PAD, r.right + PAD, r.bottom + PAD]);
+      });
+      ocultarBajoZonas();
+    };
+    // las piezas que tocarían una zona se desvanecen por completo (sin recortes ni plecas): al moverse el campo se evalúa en cada tick
+    ocultarBajoZonas = function () {
+      tiles.forEach(function (tl) {
+        var r = tl.img.getBoundingClientRect(), bajo = false;
+        for (var k = 0; k < zonasRects.length && !bajo; k++) { var z = zonasRects[k]; bajo = r.right > z[0] && r.left < z[2] && r.bottom > z[1] && r.top < z[3] && r.width > 0; }
+        tl.el.classList.toggle('bajo-zona', bajo);
+      });
+    };
+    var zonasRaf = 0, zonasPedir = function () { if (!zonasRaf) { zonasRaf = requestAnimationFrame(function () { zonasRaf = 0; protegerZonas(); }); } };
+    protegerZonas(); zonasPedir();
+    oyente(window, 'resize', zonasPedir);
+    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(zonasPedir); }
+    if (window.ResizeObserver) { var roZ = new ResizeObserver(zonasPedir); zonasEls().concat([campo]).forEach(function (e) { roZ.observe(e); }); limpiezas.push(function () { roZ.disconnect(); }); }
+    if (window.MutationObserver) { var moZ = new MutationObserver(function () { zonasPedir(); setTimeout(zonasPedir, 120); }); moZ.observe(campo.querySelector('.campo-barra'), { childList: true, subtree: true, characterData: true }); limpiezas.push(function () { moZ.disconnect(); }); }
+    limpiezas.push(function () { escena.style.webkitMaskImage = escena.style.maskImage = ''; tiles.forEach(function (tl) { tl.el.classList.remove('bajo-zona'); }); });
 
     oyente(window, 'resize', function () { medir(); aplicar(); pedirTick(); });
     limpiezas.push(function () { document.body.style.backgroundPosition = ''; document.body.style.transition = ''; parar(); if (raf) { cancelAnimationFrame(raf); } VTB.campo = null; });

@@ -323,3 +323,114 @@ body.galeria-abierta{overflow:hidden}
 .go-pie{margin:0;padding:8px var(--gutter) 24px;min-height:2.6em;text-align:center;font-size:14px;color:var(--texto-suave)}
 @media (max-width:900px){ .go-slide img{max-width:84vw;max-height:calc(100dvh - 190px)} .go-cab{grid-template-columns:1fr auto auto} }
 @media (prefers-reduced-motion:reduce){ .go{transition:none} }
+
+/* Ficha de datos (2026-11-20): columna a la izquierda, pegada abajo (desktop); el héroe queda como antes */
+@media (min-width:900px){
+  .pv{--cw:clamp(300px,24vw,440px);--mb:var(--margen-borde,20px)}
+  .pv-pie{left:var(--mb);top:0;bottom:0;align-items:end;padding:0 0 calc(var(--mb) + 8px)}
+  .carta{width:var(--cw);display:grid;grid-template-columns:1fr auto;grid-template-rows:auto auto auto auto auto auto;align-content:end;column-gap:14px;row-gap:0;overflow:visible;--ct:15px;--cd:14px;--cl:1.5;--g:10px;font-family:var(--mono)}
+  .carta-titulo,.carta-texto,.carta-datos{display:contents}
+  .carta .ficha-nombre{grid-column:1 / -1;grid-row:1;order:0;font-family:var(--mono);font-weight:300;text-transform:uppercase;font-size:clamp(30px,3.1vw,52px);line-height:1.02;letter-spacing:.1em;white-space:normal;overflow:visible;text-overflow:clip;text-wrap:balance;margin:0}
+  .carta-sabor{grid-column:1 / -1;grid-row:2;font-family:var(--mono);font-style:normal;font-size:clamp(13px,1.15vw,17px);letter-spacing:.2em;line-height:1.3;color:var(--texto);margin:12px 0 0}
+  .carta-arte{grid-column:1 / -1;grid-row:3;align-self:start;justify-self:start;width:min(100%,230px);aspect-ratio:1;margin:18px 0 14px;padding:0;background:transparent;display:grid;place-items:center}
+  .carta-arte img{max-width:78%;max-height:78%;width:auto;height:auto}
+  .carta-arte.es-sello img{width:34%;max-width:none}
+  .carta-tipo{grid-column:1;grid-row:4;display:flex;flex-direction:column;align-items:flex-start;gap:0;white-space:normal;font-family:var(--mono);font-size:13px;letter-spacing:.14em;line-height:1.6}
+  .carta-tipo-txt{display:flex;flex-direction:column;overflow:visible;text-overflow:clip}
+  .carta-tipo a{font-weight:400}
+  .carta-lugar{display:block}
+  .carta-etapa{color:var(--texto)}
+  .carta-coste{grid-column:2;grid-row:4;align-self:start;font-family:var(--mono);font-size:13px;letter-spacing:.14em;line-height:1.6}
+  .carta-distincion{grid-column:1 / -1;grid-row:5;font-family:var(--mono);font-size:12px;letter-spacing:.1em;margin:8px 0 0}
+  .carta-regla{display:none}
+  .carta-creditos{grid-column:1 / -1;grid-row:6;display:grid;gap:2px;margin:26px 0 0;font-family:var(--mono);font-size:11px;letter-spacing:.1em;line-height:1.55}
+  .carta-creditos div{display:block}
+  .carta-creditos dt{display:inline;font-weight:400;text-transform:lowercase}
+  .carta-creditos dt::after{content:": "}
+  .carta-creditos dd{display:inline;-webkit-line-clamp:unset;line-clamp:unset;overflow:visible}
+  .carta .ficha-nombre,.carta-sabor,.carta-tipo,.carta-coste,.carta-distincion,.carta-creditos{transition:opacity .45s ease,transform .5s var(--pv-ease)}
+  .pv:not(.carta-lista) :is(.carta .ficha-nombre,.carta-sabor,.carta-tipo,.carta-coste,.carta-distincion,.carta-creditos){opacity:0;transform:translateX(-28px);pointer-events:none}
+}
+
+/* galería del héroe: cada imagen tan alta como su contenedor */
+.pv-slide img{height:max(80svh,520px);max-height:none;width:auto;object-fit:cover}
+@media (max-width:899px){ .pv-slide img{height:56svh;max-height:none} }
+/* desde el segundo slide, la imagen conserva su proporción original a toda la altura */
+.pv-slide:not([data-i="0"]) img{object-fit:contain;max-width:none;width:auto}
+@media (min-width:900px){ .pv-slide:not([data-i="0"]) img{max-width:92vw} }
+@media (max-width:899px){ .pv-slide:not([data-i="0"]) img{max-width:92vw;max-height:none;height:56svh;object-fit:contain;width:auto} }
+/* primera imagen: menos margen a la derecha (borde derecho a ~20px de la pantalla; el izquierdo no se mueve) */
+@media (min-width:900px){
+  .pv-slide[data-i="0"]{--sx:calc((var(--cw) + var(--gutter)) / 2 + 17.5px)}
+  .pv-slide[data-i="0"] img{max-width:calc(100vw - var(--cw) - 2 * var(--gutter) - 48px + 35px)}
+}
+/* mismo margen (20px) a la izquierda de la ficha y a la derecha de la imagen */
+@media (min-width:900px){
+  .pv-pie{left:20px}
+  .pv-slide[data-i="0"]{--sx:calc((var(--cw) + var(--gutter)) / 2 + 17.35px)}
+  .pv-slide[data-i="0"] img{max-width:calc(100vw - var(--cw) - 2 * var(--gutter) - 48px + 34.7px)}
+}
+/* margen derecho exacto: la primera imagen se ancla al borde derecho (20px), sin depender de su proporción */
+@media (min-width:900px){
+  .pv-slide[data-i="0"]{--sx:0px;justify-items:end;padding-right:20px;box-sizing:border-box}
+  .pv-slide[data-i="0"] img{max-width:calc(100vw - var(--cw) - 80px)}
+}
+/* margen inferior de 20px: el héroe llena la pantalla bajo el menú y la imagen y la ficha terminan a 20px del borde de abajo */
+@media (min-width:900px){
+  .pv{height:max(calc(100svh - var(--header-alto, 80px)),520px)}
+  .pv-slide{align-items:start}
+  .pv-slide img,.pv-slide:not([data-i="0"]) img,.pv-slide[data-i="0"] img{height:calc(max(calc(100svh - var(--header-alto, 80px)),520px) - 20px)}
+  .pv-pie{padding:0 0 20px}
+}
+
+/* flecha sutil al centro, abajo del héroe: lleva a la siguiente sección */
+.pv-flecha{position:absolute;left:50%;bottom:28px;transform:translateX(-50%);z-index:7;appearance:none;background:none;border:0;padding:8px 14px;margin:0;line-height:0;cursor:pointer;color:var(--texto);opacity:.7;transition:opacity .25s ease}
+.pv-flecha:hover,.pv-flecha:focus-visible{opacity:1}
+.pv-flecha svg{display:block;animation:flecha-bajar 2.4s cubic-bezier(.16,1,.3,1) infinite}
+@keyframes flecha-bajar{0%{transform:translateY(-6px);opacity:0}30%{opacity:1}70%{opacity:1}100%{transform:translateY(8px);opacity:0}}
+@media (prefers-reduced-motion:reduce){ .pv-flecha svg{animation:none} }
+.pv-flecha{color:#fff;mix-blend-mode:difference}
+/* «Desplaza» centrado en el viewport, con la flecha justo encima */
+@media (min-width:900px){
+  .pv > .pv-aviso{right:auto;left:50%;transform:translateX(-50%);bottom:20px;color:#fff;mix-blend-mode:difference}
+  .pv-aviso i{background:#fff}
+  .pv-flecha{bottom:64px}
+}
+/* «Desplaza» y flecha en negro */
+.pv-flecha,.pv > .pv-aviso{color:#000;mix-blend-mode:normal}
+.pv-aviso i{background:#000}
+.pv-aviso i{display:none}
+/* márgenes mayores (costados y abajo) para que asomen las imágenes vecinas del slider */
+@media (min-width:900px){
+  .pv{--mg:clamp(24px,3vw,48px)}
+  .pv-pie{left:var(--mg);padding:0 0 var(--mg)}
+  .pv-slide[data-i="0"]{padding-right:var(--mg)}
+  .pv-slide[data-i="0"] img{max-width:calc(100vw - var(--cw) - 2 * var(--mg) - 40px)}
+  .pv-slide:not([data-i="0"]) img{max-width:calc(100vw - 2 * var(--mg))}
+  .pv-slide img,.pv-slide:not([data-i="0"]) img,.pv-slide[data-i="0"] img{height:calc(max(calc(100svh - var(--header-alto, 80px)),520px) - var(--mg))}
+  .pv-flecha{bottom:calc(var(--mg) + 44px)}
+  .pv > .pv-aviso{bottom:var(--mg)}
+}
+
+/* chevron delgado a la derecha: indica que es un slider (y avanza al hacer clic) */
+.pv-sig{display:none}
+@media (min-width:900px){
+  .pv-sig{display:block;position:absolute;right:calc(var(--mg) / 2 - 8px);top:calc((max(calc(100svh - var(--header-alto, 80px)),520px) - var(--mg)) / 2);transform:translateY(-50%);z-index:7;appearance:none;background:none;border:0;padding:12px 6px;margin:0;line-height:0;cursor:pointer;color:#000;opacity:.7;transition:opacity .25s ease,transform .3s var(--pv-ease)}
+  .pv-sig:hover,.pv-sig:focus-visible{opacity:1;transform:translate(3px,-50%)}
+  .pv-sig svg{display:block}
+}
+
+/* chevron izquierdo: sólo cuando hay una imagen antes (no en el primer slide) */
+.pv-ant{display:none}
+@media (min-width:900px){
+  .pv-ant{display:block;position:absolute;left:calc(var(--mg) / 2 - 8px);top:calc((max(calc(100svh - var(--header-alto, 80px)),520px) - var(--mg)) / 2);transform:translateY(-50%);z-index:7;appearance:none;background:none;border:0;padding:12px 6px;margin:0;line-height:0;cursor:pointer;color:#000;opacity:.7;transition:opacity .25s ease,transform .3s var(--pv-ease)}
+  .pv-ant:hover,.pv-ant:focus-visible{opacity:1;transform:translate(-3px,-50%)}
+  .pv-ant svg{display:block}
+  .pv.en-primero .pv-ant{opacity:0;pointer-events:none;visibility:hidden}
+}
+/* «Desplaza» más abajo (centrado en el margen inferior) y flecha más corta */
+@media (min-width:900px){
+  .pv > .pv-aviso{bottom:calc(var(--mg) / 2 - 8px)}
+  .pv-flecha{bottom:calc(var(--mg) / 2 + 14px)}
+  .pv-flecha svg{width:14px;height:32px}
+}

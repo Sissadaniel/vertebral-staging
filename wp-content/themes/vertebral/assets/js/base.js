@@ -45,6 +45,7 @@ window.VTB.montar.push(function (raiz) {
   var pintar = function () {
     var activos = origen.filter(function (b) { return b.getAttribute('aria-pressed') === 'true'; });
     lista.textContent = '';
+    var barra = raiz.querySelector('[data-activos-barra]'); if (barra) { barra.textContent = ''; }
     activos.forEach(function (b) {
       var n = b.cloneNode(true); var c = n.querySelector('.filtro-n'); if (c) { c.remove(); }
       var nombre = n.textContent.trim();
@@ -55,11 +56,35 @@ window.VTB.montar.push(function (raiz) {
       p.firstChild.textContent = nombre;
       p.addEventListener('click', function () { b.click(); });
       lista.appendChild(p);
+      if (barra) { var p2 = p.cloneNode(true); p2.className = 'filtro-activo filtro-activo-barra'; p2.addEventListener('click', function () { b.click(); }); barra.appendChild(p2); }
     });
     sec.hidden = !activos.length;
+    var q = raiz.querySelector('[data-filtro-limpiar]'); if (q) { q.hidden = !activos.length; }
   };
   var mo = new MutationObserver(pintar);
   origen.forEach(function (b) { mo.observe(b, { attributes: true, attributeFilter: ['aria-pressed'] }); });
   pintar();
   return function () { mo.disconnect(); };
 });
+
+/* Cursor propio: un punto que sigue al puntero; sobre algo interactivo crece (ease-out rápido) y se vuelve naranja. Solo con puntero fino
+   (ratón/trackpad); en táctiles no existe. El cursor nativo se oculta con la clase html.cursor-propio. */
+(function () {
+  if (!window.matchMedia || !matchMedia('(hover:hover) and (pointer:fine)').matches) { return; }
+  var pos = document.createElement('div'); pos.className = 'cursor-punto'; pos.setAttribute('aria-hidden', 'true');
+  var dot = document.createElement('i'); pos.appendChild(dot);
+  document.body.appendChild(pos);
+  document.documentElement.classList.add('cursor-propio');
+  var SEL = 'a,button,input,select,textarea,label,summary,[role="button"],[role="switch"],[role="tab"],[data-full],.campo-tile,.pv-zona,.pv-seg,.campo-zoom';
+  window.addEventListener('pointermove', function (e) {
+    if (e.pointerType && e.pointerType !== 'mouse' && e.pointerType !== 'pen') { return; }
+    pos.style.transform = 'translate3d(' + e.clientX + 'px,' + e.clientY + 'px,0)';
+    pos.classList.add('visible');
+    var t = e.target && e.target.closest ? e.target.closest(SEL) : null;
+    pos.classList.toggle('sobre', !!t && !t.disabled && t.getAttribute('aria-disabled') !== 'true');
+  }, { passive: true });
+  document.addEventListener('pointerleave', function () { pos.classList.remove('visible'); });
+  document.documentElement.addEventListener('mouseleave', function () { pos.classList.remove('visible'); });
+  window.addEventListener('pointerdown', function () { pos.classList.add('presion'); });
+  window.addEventListener('pointerup', function () { pos.classList.remove('presion'); });
+})();

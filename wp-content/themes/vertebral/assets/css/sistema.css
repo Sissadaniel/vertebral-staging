@@ -1,0 +1,128 @@
+/* ═════════════════════════════════════════════════════════════════════════
+   SISTEMA VERTEBRAL — reglas de identidad comunes a todas las páginas.
+   Resumen (la versión completa está en DISENO.md):
+   1 · Color: negro sobre gris claro #F9F9F9 con papel; gris #E2E2E2 para líneas; naranja #F74F14 solo para foco, activo y acento.
+   2 · Tipo: monoespaciada (--mono) para títulos, menú, rótulos y datos; grotesca (--cuerpo) 14/1.7 para texto corrido.
+   3 · Apertura: toda página abre con el triángulo ▼ centrado y un título mono ligero en mayúsculas.
+   4 · Rejilla: 12 columnas con margen lateral --gutter; rótulo/foto a la izquierda (.vt-lateral, 3 col), contenido a la derecha (.vt-principal, 9 col).
+   5 · Fotos: a sangre, object-fit:cover, sin marco, sombra ni radio; pie en rótulo mono.
+   6 · Listas: filas separadas por línea fina, rótulo mono + nombre mono; al pasar el cursor se oscurece el resto.
+   7 · Espacio: separación vertical entre secciones = --vt-seccion; nada de cajas ni tarjetas con fondo.
+   8 · Movimiento: solo transiciones de color/posición de .25–.6s con --salida; respetar prefers-reduced-motion.
+   ═════════════════════════════════════════════════════════════════════════ */
+:root{
+  --vt-seccion:clamp(48px,6.5vw,104px);
+  --vt-col:clamp(16px,2vw,28px);
+  --vt-rotulo:11px;
+}
+.vt{display:flex;flex-direction:column;gap:var(--vt-seccion);padding:0 var(--gutter) calc(var(--vt-seccion) * 1.2);color:var(--texto)}
+.vt img{display:block}
+
+/* tipografía */
+.vt-rotulo{margin:0;font-family:var(--mono);font-size:var(--vt-rotulo);font-weight:400;letter-spacing:.14em;text-transform:uppercase;line-height:1.5;color:var(--texto)}
+.vt-rotulo a{color:inherit;text-decoration:none}
+.vt-rotulo a:hover{color:var(--acento)}
+.vt-titulo{margin:0;font-family:var(--mono);font-weight:300;font-size:clamp(22px,2.4vw,34px);letter-spacing:.06em;text-transform:uppercase;line-height:1.2}
+.vt-prosa{font-family:var(--cuerpo);font-size:14px;line-height:1.7;letter-spacing:.03em;max-width:62ch}
+.vt-prosa > * + *{margin-top:1.4em}
+.vt-prosa h2,.vt-prosa h3{font-family:var(--mono);font-weight:400;font-size:var(--vt-rotulo);letter-spacing:.14em;text-transform:uppercase;margin-top:2.4em}
+.vt-prosa a{color:var(--texto);text-underline-offset:3px;text-decoration-color:var(--linea);transition:text-decoration-color .25s ease,color .25s ease}
+.vt-prosa a:hover{color:var(--acento);text-decoration-color:currentColor}
+.vt-n{opacity:.45;font-variant-numeric:tabular-nums;margin-left:6px}
+
+/* apertura */
+.vt-apertura{display:grid;grid-template-columns:1fr;justify-items:center;gap:clamp(18px,2.4vw,34px);padding-top:clamp(6px,1vw,16px);text-align:center}
+.vt-triangulo{display:block;color:#000}
+.vt-apertura .vt-titulo,.vt-apertura .vt-rotulo{justify-self:center}
+.vt-apertura .vt-rotulo{opacity:.55}
+
+/* rejilla de 12 columnas */
+.vt-cuadricula{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));column-gap:var(--vt-col);row-gap:20px;align-items:start}
+.vt-lateral{grid-column:1 / span 3}
+.vt-principal{grid-column:4 / -1;min-width:0}
+.vt-titulo.vt-lateral{grid-column:1 / span 5;align-self:start}
+.vt-noticia .vt-principal{grid-column:6 / -1}
+
+/* fotos */
+.vt-foto{margin:0;line-height:0;overflow:hidden}
+.vt-img{width:100%;height:auto;object-fit:cover}
+.vt-vacio{aspect-ratio:4/3;background:var(--crema-2)}
+.vt-ancha .vt-img{max-height:62vh}
+
+/* tira horizontal de fotos (portadas) */
+.vt-tira{display:flex;gap:var(--vt-col);overflow-x:auto;margin:0 calc(var(--gutter) * -1);padding:0 var(--gutter);scrollbar-width:none;scroll-snap-type:x proximity}
+.vt-tira::-webkit-scrollbar{display:none}
+.vt-tira .vt-foto{flex:none;height:clamp(200px,26vw,420px);scroll-snap-align:start}
+.vt-tira .vt-img{width:auto;height:100%}
+
+/* filas */
+.vt-filas{list-style:none;margin:0;padding:0;border-top:1px solid var(--linea)}
+.vt-fila{border-bottom:1px solid var(--linea)}
+.vt-fila-enlace{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,4fr) 2rem;gap:6px 24px;align-items:baseline;padding:15px 4px;color:var(--texto);text-decoration:none;transition:padding-left .35s var(--salida),color .25s ease}
+a.vt-fila-enlace:hover{padding-left:14px;color:var(--acento)}
+.vt-fila-nombre{font-family:var(--mono);font-size:clamp(15px,1.4vw,20px);line-height:1.3;letter-spacing:.01em}
+.vt-fila-nombre a{color:inherit;text-decoration:none}
+.vt-fila-nombre a:hover{color:var(--acento)}
+.vt-fila-fin{text-align:right}
+.vt-fila-premio{grid-template-columns:4.5rem minmax(0,3fr) minmax(0,2fr)}
+.vt-fila-det{font-family:var(--cuerpo);font-size:13px;letter-spacing:.03em}
+.vt-fila-det a{color:inherit;text-underline-offset:3px;text-decoration-color:var(--linea)}
+.vt-fila-det a:hover{color:var(--acento)}
+.vt-filas:has(a.vt-fila-enlace:hover) .vt-fila-enlace:not(:hover){opacity:.45}
+.vt-fila-enlace{transition:padding-left .35s var(--salida),color .25s ease,opacity .25s ease}
+
+/* rejilla de tarjetas (sin caja) */
+.vt-rejilla{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:clamp(28px,3vw,48px) var(--vt-col)}
+.vt-rejilla-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.vt-tarjeta{display:grid;gap:10px;align-content:start;color:var(--texto);text-decoration:none}
+.vt-tarjeta .vt-foto{aspect-ratio:4/3}
+.vt-tarjeta .vt-img{height:100%;transition:transform .6s var(--salida)}
+.vt-tarjeta:hover .vt-img{transform:scale(1.035)}
+.vt-tarjeta-nombre{font-family:var(--mono);font-size:clamp(14px,1.2vw,17px);line-height:1.35;letter-spacing:.01em;transition:color .25s ease}
+.vt-tarjeta:hover .vt-tarjeta-nombre{color:var(--acento)}
+.vt-rejilla:has(.vt-tarjeta:hover) .vt-tarjeta:not(:hover){opacity:.5}
+.vt-tarjeta{transition:opacity .25s ease}
+
+/* noticia: anterior / siguiente */
+.vt-vecinos{display:grid;grid-template-columns:1fr 1fr;gap:var(--vt-col);border-top:1px solid var(--linea);padding-top:24px}
+.vt-vecinos a{display:grid;gap:6px;color:var(--texto);text-decoration:none;transition:color .25s ease}
+.vt-vecinos a:hover{color:var(--acento)}
+.vt-vecinos .vt-der{text-align:right}
+.vt-vecino-nombre{font-family:var(--mono);font-size:clamp(14px,1.3vw,18px);line-height:1.3}
+.vt-noticia .vt-principal .vt-foto{margin-bottom:28px}
+
+/* contacto: los datos son pares rótulo/valor */
+.vt-datos p{display:grid;grid-template-columns:12rem 1fr;gap:12px;align-items:baseline;border-top:1px solid var(--linea);padding-top:10px;margin:0}
+.vt-datos p + p{margin-top:10px}
+.vt-datos p strong{font-family:var(--mono);font-weight:400;font-size:var(--vt-rotulo);letter-spacing:.14em;text-transform:uppercase}
+.vt-datos h2{display:none}
+.vt-contacto .contacto-form{margin-top:var(--vt-seccion);border-top:0;padding-top:0}
+.vt-contacto .contacto-form h2{font-family:var(--mono);font-weight:400;font-size:var(--vt-rotulo);letter-spacing:.14em;text-transform:uppercase;margin:0 0 20px}
+
+/* cabecera editorial: sin las reglas heredadas de .pagina */
+.sitio-main:has(> .vt){padding:0;max-width:none}
+
+@media (max-width:899px){
+  .vt{gap:40px}
+  .vt-cuadricula{display:flex;flex-direction:column;gap:20px}
+  .vt-rejilla-3{grid-template-columns:1fr 1fr}
+  .vt-fila-enlace{grid-template-columns:1fr;gap:2px}
+  .vt-fila-premio{grid-template-columns:1fr}
+  .vt-fila-fin{display:none}
+  .vt-datos p{grid-template-columns:1fr;gap:2px}
+  .vt-lateral .vt-foto{max-width:420px}
+}
+@media (max-width:560px){.vt-rejilla-3{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.vt-tarjeta .vt-img,.vt-fila-enlace,.vt-tarjeta{transition:none}}
+
+/* el listado de proyectos adopta la misma apertura (triángulo + título mono ligero), sin la etiqueta de papel */
+.listado-cabecera::before{content:'';display:block;width:28px;height:26px;margin:0 auto clamp(18px,2.4vw,34px);background:#000;clip-path:polygon(0 0,100% 0,50% 100%)}
+.listado-cabecera-fila{justify-content:center;text-align:center}
+.listado .listado-titulo{background:none;box-shadow:none;padding:0;font-weight:300;font-size:clamp(22px,2.4vw,34px);letter-spacing:.06em;text-transform:uppercase}
+.listado .listado-cuenta{opacity:.55}
+
+/* retratos del equipo (Nosotros): aparecen al pasar el cursor por el nombre */
+.nos-equipo li{position:relative}
+.nos-retrato{position:absolute;right:calc(100% + 2vw);top:50%;width:clamp(90px,9vw,150px);aspect-ratio:3/4;object-fit:cover;transform:translateY(-50%);opacity:0;pointer-events:none;transition:opacity .3s ease}
+.nos-equipo li:hover .nos-retrato{opacity:1}
+@media (hover:none){.nos-retrato{display:none}}

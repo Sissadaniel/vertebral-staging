@@ -20,15 +20,15 @@
       f._nombre = sinAcento(f.dataset.nombre).replace(/^[^a-z0-9]+/, '');   // «% Arabica» se ordena (y agrupa) bajo la A
       f._busca = sinAcento(f.dataset.busca);
       f._anio = parseInt(f.dataset.anio, 10) || 0;
-      f._tip = (f.dataset.tip || '').split(' ').filter(Boolean); f._pais = f.dataset.pais || ''; f._ctx = (f.dataset.ctx || '').split(' ').filter(Boolean);
+      f._tip = (f.dataset.tip || '').split(' ').filter(Boolean); f._pais = f.dataset.pais || ''; f._ctx = (f.dataset.ctx || '').split(' ').filter(Boolean); f._kw = (f.dataset.kw || '').split(' ').filter(Boolean);
     });
-    var estado = { q: '', tip: '', pais: '', ctx: '', orden: 'az' };
+    var estado = { q: '', tip: '', pais: '', ctx: '', kw: '', orden: 'az' };
 
     var pintar = function () {
       // letras de cabecera: se rehacen en cada cambio
       [].slice.call(lista.querySelectorAll('.fila-letra')).forEach(function (n) { n.remove(); });
       var vis = filas.filter(function (f) {
-        var ok = (!estado.tip || f._tip.indexOf(estado.tip) > -1) && (!estado.pais || f._pais === estado.pais) && (!estado.ctx || f._ctx.indexOf(estado.ctx) > -1) && (!estado.q || f._busca.indexOf(estado.q) > -1);
+        var ok = (!estado.tip || f._tip.indexOf(estado.tip) > -1) && (!estado.pais || f._pais === estado.pais) && (!estado.ctx || f._ctx.indexOf(estado.ctx) > -1) && (!estado.kw || f._kw.indexOf(estado.kw) > -1) && (!estado.q || f._busca.indexOf(estado.q) > -1);
         f.hidden = !ok; return ok;
       });
       vis.sort(estado.orden === 'anio'
@@ -47,7 +47,7 @@
       filas.filter(function (f) { return f.hidden; }).forEach(function (f) { lista.appendChild(f); });
       if (cuenta) { cuenta.textContent = String(vis.length); }
       var cc = raiz.querySelector('[data-cuenta-cajon]'); if (cc) { cc.textContent = String(vis.length); }
-      var nAct = (estado.tip ? 1 : 0) + (estado.pais ? 1 : 0) + (estado.ctx ? 1 : 0), bn = raiz.querySelector('[data-filtro-n]');
+      var nAct = (estado.tip ? 1 : 0) + (estado.pais ? 1 : 0) + (estado.ctx ? 1 : 0) + (estado.kw ? 1 : 0), bn = raiz.querySelector('[data-filtro-n]');
       if (bn) { bn.hidden = !nAct; bn.textContent = String(nAct); }
       if (vacio) { vacio.hidden = vis.length > 0; }
     };
@@ -62,7 +62,7 @@
     pildoras.forEach(function (b) {
       esc(b, 'click', function () {
         var activo = estado[b.dataset.grupo] === b.dataset.valor && b.dataset.valor !== '';
-        estado.tip = estado.pais = estado.ctx = '';
+        estado.tip = estado.pais = estado.ctx = estado.kw = '';
         if (!activo) { estado[b.dataset.grupo] = b.dataset.valor; }
         pintarPildoras(); pintar();
       });
@@ -90,13 +90,14 @@
       esc(cajon.querySelector('[data-cajon-cerrar]'), 'click', cerrarCajon);
       esc(document, 'keydown', function (e) { if (e.key === 'Escape' && abierto()) { e.stopPropagation(); cerrarCajon(); } }, true);
       var limpiar = cajon.querySelector('[data-filtro-limpiar]');
-      if (limpiar) { esc(limpiar, 'click', function () { estado.tip = estado.pais = estado.ctx = ''; pintarPildoras(); pintar(); }); }
+      if (limpiar) { esc(limpiar, 'click', function () { estado.tip = estado.pais = estado.ctx = estado.kw = ''; pintarPildoras(); pintar(); }); }
     }
 
     var q = new URLSearchParams(location.search);
     estado.tip = q.get('tip') || raiz.dataset.previoTip || '';
     estado.pais = q.get('pais') || raiz.dataset.previoPais || '';
     estado.ctx = q.get('ctx') || raiz.dataset.previoCtx || '';
+    estado.kw = q.get('kw') || raiz.dataset.previoKw || '';
     pintarPildoras(); pintar();
 
     /* ───────── La foto sigue al cursor (puntero fino) o se coloca junto a la fila (teclado) ───────── */

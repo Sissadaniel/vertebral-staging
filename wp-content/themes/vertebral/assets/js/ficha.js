@@ -127,6 +127,12 @@
     /* ───────── Deslizador del héroe ───────── */
     var pv = ficha.querySelector('[data-pv]');
     if (pv) {
+      var ant = pv.querySelector('[data-ant]');
+      if (ant) { oyente(ant, 'click', function () { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowLeft', bubbles: true })); }); }
+      var sig = pv.querySelector('[data-sig]');
+      if (sig) { oyente(sig, 'click', function () { document.dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true })); }); }
+      var flecha = pv.querySelector('[data-scroll-abajo]');
+      if (flecha) { oyente(flecha, 'click', function () { var r = pv.getBoundingClientRect(); window.scrollTo({ top: window.scrollY + r.bottom - (parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--header-alto')) || 0), behavior: quieto ? 'auto' : 'smooth' }); }); }
       // la ficha (símbolo + texto) aparece cuando la imagen del primer slide ya está completamente visible: sin vuelo ni transiciones en curso y decodificada
       var fichaTok = 0;
       var revisarCarta = function () {
