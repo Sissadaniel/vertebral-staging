@@ -12,15 +12,15 @@
   // Celdas grandes y sin contacto: la holgura entre celdas (STEP − TILE) debe superar el desplazamiento relativo máximo de dos vecinas
   // (2 × (JIT_POS + ONDA)) más lo que crece la celda en foco (×1.22, `--k` en campo.css). Si se agrandan TILE/JIT_POS/ONDA, subir STEP y revisar con la prueba de solapes (ver CLAUDE.md).
   var ESTRECHO = window.innerWidth < 720;
-  var TILE = ESTRECHO ? 200 : 264, HUECO_MAX = 1.25, HUECO_MIN = 0.75, COLS_MAX = 7;
+  var TILE = ESTRECHO ? 262 : 340, HUECO_MAX = 1.25, HUECO_MIN = 0.75, COLS_MAX = 7;
   var STEP = ESTRECHO ? 320 : 400;   // paso fijo entre celdas: ya no hay zoom
   var ZINICIO = 1;                               // tamaño fijo: el que tenía el campo al 100 %
   var modoObjeto = true; try { if (localStorage.getItem('vtb_modo') === 'fotos') { modoObjeto = false; } } catch (e) {}   // el navegador recuerda la última elección del visitante
   //                        // true: las celdas con objeto sin fondo lo muestran; false: siempre la foto principal
   if (window.VTB) { VTB.modoObjetoActivo = function () { return modoObjeto; }; }   // el router lo consulta para decidir el origen del vuelo de vuelta
   var filtroGuardado = { tip: [], pais: [], ctx: [], kw: [] };   // el filtro elegido sobrevive al ir a una ficha y volver
-  var JIT_POS = 28;                                    // amplitud del desplazamiento aleatorio de cada celda (px por eje)
-  var ONDA = 12;                                       // amplitud de una ondulación suave que rompe las filas y columnas rectas
+  var JIT_POS = 18;                                    // amplitud del desplazamiento aleatorio de cada celda (px por eje)
+  var ONDA = 8;                                        // amplitud de una ondulación suave que rompe las filas y columnas rectas
   var ruido = function (c, r, sal) { var x = Math.sin(c * 127.1 + r * 311.7 + sal * 74.7) * 43758.5453; return x - Math.floor(x); };
   /* desplazamiento estable de la celda (c,r): azar propio + ondulación lenta; las imágenes no se giran ni se escalan */
   var desplazamiento = function (c, r) {
@@ -135,6 +135,7 @@
       var d = desplazamiento(c, r); el.style.translate = (d[0] * g.sc) + 'px ' + (d[1] * g.sc) + 'px';
       el.dataset.i = i;
       var img = document.createElement('img'); img.alt = ''; img.draggable = false; img.decoding = 'async';
+      img.style.setProperty('--v', (0.66 + 0.34 * ruido(c, r, 3)).toFixed(3));   // tamaño propio de cada emblema (0.66–1.0 del máximo): más variación y algo más pequeños
       ponerImagen(el, img, p);
       el.appendChild(img); rejilla.appendChild(el);
       var t = { el: el, img: img, c: c, r: r, i: i };
@@ -171,6 +172,10 @@
       var x = ptr.dentro ? ptr.x : W / 2, y = ptr.dentro ? ptr.y : H / 2;
       var cr = celdaCercana(x, y), t = tiles.get(cr[0] + ',' + cr[1]);
       if (t && t.el.classList.contains('fuera')) { t = null; }
+      if (t && ptr.dentro) {   // con el puntero encima, sólo cuenta si está realmente sobre la imagen (sin margen alrededor)
+        var ri = t.img.getBoundingClientRect(), eb = escena.getBoundingClientRect(), px = ptr.x + eb.left, py = ptr.y + eb.top;
+        if (px < ri.left || px > ri.right || py < ri.top || py > ri.bottom) { t = null; }
+      }
       if (t === focoActual) { return; }
       if (focoActual) { focoActual.el.classList.remove('foco'); }
       focoActual = t || null;
@@ -191,10 +196,6 @@
     var actualizarPrevia = function () {
       var t = focoActual, p = t && datos[t.i];
       var ver = !!(p && ptr.dentro && !arrastra && !bloqueado && !campo.classList.contains('saliendo'));
-      if (ver) {   // sólo si el puntero está realmente sobre la imagen de la pieza, sin margen alrededor
-        var ri = t.img.getBoundingClientRect(), eb = escena.getBoundingClientRect(), px = ptr.x + eb.left, py = ptr.y + eb.top;
-        ver = px >= ri.left && px <= ri.right && py >= ri.top && py <= ri.bottom;
-      }
       if (!ver) { previa.classList.remove('visible'); campo.classList.remove('con-previa'); tiles.forEach(function (tl) { tl.el.classList.remove('tapada'); }); return; }
       if (previaId !== p.id) {
         previaId = p.id; previaImg.src = p.grande || p.mini;
@@ -219,8 +220,7 @@
       });
     };
 
-    var ocultarBajoZonas = null;
-    var tick = function () { raf = 0; sincronizar(); if (ocultarBajoZonas) { ocultarBajoZonas(); } actualizarFoco(); actualizarPrevia(); };
+    var tick = function () { raf = 0; sincronizar(); actualizarFoco(); actualizarPrevia(); };
     var pedirTick = function () { if (!raf) { raf = requestAnimationFrame(tick); } };
 
     /* ───────── Zoom ───────── */
@@ -528,7 +528,11 @@
     if (vistaGuardada) { escala = vistaGuardada.escala; }
     STEP = pasoPara(escala);                            // el paso depende del zoom: va antes de calcular cualquier origen
     if (vistaGuardada) { ox = vistaGuardada.ox; oy = OY; }
-    else { var c = origenPara(3, 0); ox = c[0]; oy = OY; }
+    else {
+      var c = origenPara(3, 0); ox = c[0]; oy = OY;
+      var iAr = datos.findIndex(function (p) { return /\/arabica-condesa\/?$/.test(p.url || ''); });   // proyecto central al abrir el sitio
+      if (iAr > -1 && !tipParam) { centrarEn(iAr, false); }
+    }
     if (volverA && (!tipParam || volverMatch)) {
       var idx = datos.findIndex(function (p) { return p.id === volverA; });
       if (idx > -1) { centrarEn(idx, false); }
@@ -539,63 +543,22 @@
 
     if (!vistaGuardada || !volverA) {
       if (!quieto) {
-        // aparición: las piezas nacen en el centro de la pantalla y se expanden hacia afuera hasta su lugar (las más cercanas al centro primero)
-        var eb = escena.getBoundingClientRect(), cx = W / 2 + eb.left, cy = H / 2 + eb.top;
+        // aparición: las piezas surgen desde el centro hacia afuera
         campo.classList.add('intro');
         tiles.forEach(function (t) {
-          var r = t.el.getBoundingClientRect(), mx = r.left + r.width / 2, my = r.top + r.height / 2;
-          var d = Math.hypot(mx - cx, my - cy), dx = (cx - mx) / escala, dy = (cy - my) / escala;
-          var dl = Math.min(700, d * 0.7);
-          t.img.style.transitionDelay = dl + 'ms';
-          if (t.el.animate) {
-            t.el.animate([{ transform: 'translate(' + dx + 'px,' + dy + 'px) scale(.15)' }, { transform: 'none' }],
-              { duration: 1100, delay: dl, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'backwards' });
-          }
+          var r = t.el.getBoundingClientRect(), d = Math.hypot(r.left + r.width / 2 - (W / 2), r.top + r.height / 2 - (H / 2 + escena.getBoundingClientRect().top));
+          t.img.style.transitionDelay = Math.min(900, d * 0.9) + 'ms';
         });
         requestAnimationFrame(function () { requestAnimationFrame(function () {
           campo.classList.remove('intro');
-          setTimeout(function () { tiles.forEach(function (t) { t.img.style.transitionDelay = ''; }); if (typeof zonasPedir === 'function') { zonasPedir(); } }, 2000);
+          setTimeout(function () { tiles.forEach(function (t) { t.img.style.transitionDelay = ''; }); }, 1900);
         }); });
       }
     }
 
-    // Zonas protegidas: el logo, el menú, los filtros y el lema de la esquina nunca tienen una imagen o emblema detrás, a ningún tamaño de pantalla.
-    // El campo (escena) se enmascara con un hueco por cada zona (los huecos que se tocan se funden en uno), recalculado al cambiar tamaño o contenido.
-    var zonasEls = function () {
-      var out = [], q = function (sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); };
-      q('header.top .marca, header.top .wp-block-navigation__container > li, header.top .wp-block-navigation__responsive-container-open').forEach(function (e) { out.push(e); });
-      q('.campo-modo, .campo-filtro, .filtro-activo-barra', campo).forEach(function (e) { out.push(e); });
-      q('.campo-lema span', campo).forEach(function (e) { out.push(e); });
-      return out;
-    };
-    var zonasRects = [];
-    var protegerZonas = function () {
-      var PAD = 12;
-      zonasRects = [];
-      zonasEls().forEach(function (e) {
-        var r = e.getBoundingClientRect();
-        if (r.width < 2 || r.height < 2 || getComputedStyle(e).visibility === 'hidden') { return; }
-        zonasRects.push([r.left - PAD, r.top - PAD, r.right + PAD, r.bottom + PAD]);
-      });
-      ocultarBajoZonas();
-    };
-    // las piezas que tocarían una zona se desvanecen por completo (sin recortes ni plecas): al moverse el campo se evalúa en cada tick
-    ocultarBajoZonas = function () {
-      tiles.forEach(function (tl) {
-        var r = tl.img.getBoundingClientRect(), bajo = false;
-        for (var k = 0; k < zonasRects.length && !bajo; k++) { var z = zonasRects[k]; bajo = r.right > z[0] && r.left < z[2] && r.bottom > z[1] && r.top < z[3] && r.width > 0; }
-        tl.el.classList.toggle('bajo-zona', bajo);
-      });
-    };
-    var zonasRaf = 0, zonasPedir = function () { if (!zonasRaf) { zonasRaf = requestAnimationFrame(function () { zonasRaf = 0; protegerZonas(); }); } };
-    protegerZonas(); zonasPedir();
-    oyente(window, 'resize', zonasPedir);
-    if (document.fonts && document.fonts.ready) { document.fonts.ready.then(zonasPedir); }
-    if (window.ResizeObserver) { var roZ = new ResizeObserver(zonasPedir); zonasEls().concat([campo]).forEach(function (e) { roZ.observe(e); }); limpiezas.push(function () { roZ.disconnect(); }); }
-    if (window.MutationObserver) { var moZ = new MutationObserver(function () { zonasPedir(); setTimeout(zonasPedir, 120); }); moZ.observe(campo.querySelector('.campo-barra'), { childList: true, subtree: true, characterData: true }); limpiezas.push(function () { moZ.disconnect(); }); }
-    limpiezas.push(function () { escena.style.webkitMaskImage = escena.style.maskImage = ''; tiles.forEach(function (tl) { tl.el.classList.remove('bajo-zona'); }); });
 
     oyente(window, 'resize', function () { medir(); aplicar(); pedirTick(); });
+
     limpiezas.push(function () { document.body.style.backgroundPosition = ''; document.body.style.transition = ''; parar(); if (raf) { cancelAnimationFrame(raf); } VTB.campo = null; });
     return function () {
       vistaGuardada = { ox: ox, oy: oy, escala: escala };
